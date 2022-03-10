@@ -1,0 +1,67 @@
+.layout {
+    display        : flex;
+    flex-direction : column;
+    justify-content: center;
+    align-items    : center;
+    max-width      : 668px;
+    margin         : auto;
+
+    @media @phone {
+        padding: 20px;
+    }
+
+    >header {
+        width          : 100%;
+        display        : flex;
+        justify-content: space-between;
+        margin-top     : 15px;
+        margin-bottom  : 15px;
+
+        >.apm-bridge-logo {
+            width : 176.49px;
+            height: 36px;
+        }
+
+        >.gaia-bridge-logo {
+            width : 114.87px;
+            height: 36px;
+        }
+    }
+
+    >main {
+        width: 100%;
+    }
+
+    >footer {
+        width          : 100%;
+        display        : flex;
+        justify-content: space-between;
+        margin-top     : 12px;
+
+        @media @phone {
+            flex-direction: column;
+        }
+
+        >.copyright {
+            font-size  : 14px;
+            line-height: 17px;
+            color      : #969696;
+        }
+
+        >.sns {
+            display: flex;
+            gap    : 18px;
+
+            @media @phone {
+                margin-top: 12px;
+            }
+
+            >a {
+                font-size           : 14px;
+                line-height         : 17px;
+                text-decoration-line: underline;
+                color               : #969696;
+            }
+        }
+    }
+}
