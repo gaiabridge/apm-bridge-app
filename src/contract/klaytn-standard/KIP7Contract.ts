@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish, ContractInterface } from "ethers";
-import Contract from "../Contract";
+import KlaytnContract from "../KlaytnContract";
 
-export default abstract class KIP7Contract extends Contract {
+export default abstract class KIP7Contract extends KlaytnContract {
 
     constructor(address: string, abi: ContractInterface) {
         super(address, abi);
@@ -33,5 +33,13 @@ export default abstract class KIP7Contract extends Contract {
 
     public async approve(spender: string, amount: BigNumberish) {
         await this.runWalletMethod("approve", spender, amount);
+    }
+
+    public async getTransferEvents(startBlock: number, endBlock: number) {
+        const events = await this.contract.getPastEvents("Transfer", {
+            fromBlock: startBlock,
+            toBlock: endBlock,
+        });
+        return events;
     }
 }

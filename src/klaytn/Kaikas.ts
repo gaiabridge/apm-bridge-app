@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import EventContainer from "eventcontainer";
 
-class ExtWallet extends EventContainer {
+class Kaikas extends EventContainer {
 
     private klaytn: any | undefined = (window as any).klaytn;
     private caver: any | undefined = (window as any).caver;
@@ -33,6 +33,10 @@ class ExtWallet extends EventContainer {
         return this.caver === undefined ? -1 : await this.caver.klay.getBlockNumber();
     }
 
+    public async loadBalance() {
+        return BigNumber.from(this.caver === undefined ? -1 : await this.caver.klay.getBalance(await this.loadAddress()));
+    }
+
     public async connected() {
         return await this.loadAddress() !== undefined;
     }
@@ -61,11 +65,6 @@ class ExtWallet extends EventContainer {
             id: Math.round(Math.random() * 100000),
         });
     }
-
-    public async signMessage(message: string) {
-        const address = await this.loadAddress();
-        return address === undefined ? undefined : this.caver?.klay.sign(message, address);
-    }
 }
 
-export default new ExtWallet();
+export default new Kaikas();

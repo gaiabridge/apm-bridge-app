@@ -1,13 +1,10 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import EventContainer from "eventcontainer";
-import ConnectWalletPopup from "../component/shared/ConnectWalletPopup";
-import Config from "../Config";
-import ExtWallet from "../klaytn/ExtWallet";
+import ExtWallet from "../klaytn/Kaikas";
 import Klaytn from "../klaytn/Klaytn";
-import Klip from "../klaytn/Klip";
-import Wallet from "../klaytn/Wallet";
+import KlaytnWallet from "../klaytn/KlaytnWallet";
 
-export default abstract class Contract extends EventContainer {
+export default abstract class KlaytnContract extends EventContainer {
 
     private walletContract: any | undefined;
     protected contract: any;
@@ -22,7 +19,7 @@ export default abstract class Contract extends EventContainer {
     }
 
     public async loadExtWalletContract() {
-        if (await ExtWallet.loadChainId() !== Config.chainId) {
+        if (await ExtWallet.loadChainId() !== 8217) {
             this.fireEvent("wrongNetwork");
             console.error("Wrong Network");
         } else {
@@ -42,13 +39,11 @@ export default abstract class Contract extends EventContainer {
 
     private async runWalletMethodWithGas(methodName: string, gas: number, ...params: any[]) {
         if (ExtWallet.installed === true) {
-            const from = await Wallet.loadAddress();
+            const from = await KlaytnWallet.loadAddress();
             const contract = await this.loadExtWalletContract();
             await contract?.methods[methodName](...params).send({ from, gas });
-        } else if (Klip.connected === true) {
-            await Klip.runContractMethod(this.address, this.findMethodABI(methodName), params);
         } else {
-            return new Promise<void>((resolve) => new ConnectWalletPopup(resolve));
+            alert("카이카스가 필요합니다. 카이카스를 설치해주시기 바랍니다.");
         }
     }
 
@@ -62,13 +57,11 @@ export default abstract class Contract extends EventContainer {
 
     protected async runWalletMethodWithValue(value: BigNumber, methodName: string, ...params: any[]) {
         if (ExtWallet.installed === true) {
-            const from = await Wallet.loadAddress();
+            const from = await KlaytnWallet.loadAddress();
             const contract = await this.loadExtWalletContract();
             await contract?.methods[methodName](...params).send({ from, gas: 1500000, value });
-        } else if (Klip.connected === true) {
-            await Klip.runContractMethod(this.address, this.findMethodABI(methodName), params, value.toString());
         } else {
-            return new Promise<void>((resolve) => new ConnectWalletPopup(resolve));
+            alert("카이카스가 필요합니다. 카이카스를 설치해주시기 바랍니다.");
         }
     }
 }
