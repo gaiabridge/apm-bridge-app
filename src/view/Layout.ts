@@ -21,19 +21,13 @@ export default class Layout implements View {
                     el(".sns",
                         el("a.item", "Gaia Discord",
                             {
-                                href: "https://github.com/chainhorizon",
-                                target: "_blank",
-                            }
-                        ),
-                        el("a.item", "apM Telegram",
-                            {
-                                href: "https://medium.com/chainhorizon",
+                                href: "https://discord.gg/gaia",
                                 target: "_blank",
                             }
                         ),
                         el("a.item", "apM Web",
                             {
-                                href: "https://chainhorizon.org",
+                                href: "https://apm-coin.com/",
                                 target: "_blank",
                             }
                         )
@@ -44,7 +38,7 @@ export default class Layout implements View {
     }
 
     public set title(title: string) {
-        document.title = `${title} | Sky Boilerplate`;
+        document.title = `${title} | apM Bridge`;
     }
 
     public changeParams(params: ViewParams, uri: string): void { }

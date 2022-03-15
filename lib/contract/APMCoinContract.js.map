@@ -1,0 +1,1 @@
+{"version":3,"file":"APMCoinContract.js","sourceRoot":"","sources":["../../src/contract/APMCoinContract.ts"],"names":[],"mappings":";;;;;AAAA,6HAAwG;AACxG,sFAA8D;AAE9D,MAAM,eAAgB,SAAQ,uBAAkB;IAE5C;QACI,KAAK,CAAC,4CAA4C,EAAE,qBAAc,CAAC,GAAG,EAAE,EAAE,CAAC,CAAC;IAChF,CAAC;CACJ;AAED,kBAAe,IAAI,eAAe,EAAE,CAAC"}

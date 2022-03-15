@@ -1,0 +1,1 @@
+{"version":3,"file":"TransactionAlert.d.ts","sourceRoot":"","sources":["../../../../src/component/shared/dialogue/TransactionAlert.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAM,KAAK,EAAE,MAAM,gBAAgB,CAAC;AAEpD,MAAM,CAAC,OAAO,OAAO,gBAAiB,SAAQ,KAAK;IAExC,OAAO,EAAE,OAAO,CAAC;gBAGpB,OAAO,EAAE,MAAM;CAUtB"}
