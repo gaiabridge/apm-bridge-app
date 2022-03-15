@@ -510,28 +510,6 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nclas
 
 /***/ }),
 
-/***/ "./src/klaytn/ExtWallet.ts":
-/*!*********************************!*\
-  !*** ./src/klaytn/ExtWallet.ts ***!
-  \*********************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst eventcontainer_1 = __importDefault(__webpack_require__(/*! eventcontainer */ \"./node_modules/eventcontainer/EventContainer.js\"));\nclass ExtWallet extends eventcontainer_1.default {\n    constructor() {\n        super();\n        this.klaytn = window.klaytn;\n        this.caver = window.caver;\n        this.checkConnected();\n    }\n    get installed() {\n        return this.klaytn !== undefined && this.caver !== undefined;\n    }\n    async checkConnected() {\n        if (await this.connected() === true) {\n            this.fireEvent(\"connect\");\n        }\n    }\n    async loadAddress() {\n        return this.caver === undefined ? undefined : (await this.caver.klay.getAccounts())[0];\n    }\n    async loadChainId() {\n        return this.caver === undefined ? -1 : await this.caver.klay.getChainId();\n    }\n    async loadBlockNumber() {\n        return this.caver === undefined ? -1 : await this.caver.klay.getBlockNumber();\n    }\n    async connected() {\n        return await this.loadAddress() !== undefined;\n    }\n    async connect() {\n        await this.klaytn?.enable();\n        this.checkConnected();\n    }\n    createContract(address, abi) {\n        return this.caver === undefined ? undefined : new this.caver.klay.Contract(abi, address);\n    }\n    addToken(address, symbol, decimals, image) {\n        this.klaytn?.sendAsync({\n            method: \"wallet_watchAsset\",\n            params: {\n                type: \"ERC20\",\n                options: { address, symbol, decimals, image },\n            },\n            id: Math.round(Math.random() * 100000),\n        });\n    }\n    async signMessage(message) {\n        const address = await this.loadAddress();\n        return address === undefined ? undefined : this.caver?.klay.sign(message, address);\n    }\n}\nexports[\"default\"] = new ExtWallet();\n\n\n//# sourceURL=webpack://skynode-web3-boilerplate/./src/klaytn/ExtWallet.ts?");
-
-/***/ }),
-
-/***/ "./src/klaytn/Wallet.ts":
-/*!******************************!*\
-  !*** ./src/klaytn/Wallet.ts ***!
-  \******************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst eventcontainer_1 = __importDefault(__webpack_require__(/*! eventcontainer */ \"./node_modules/eventcontainer/EventContainer.js\"));\nconst ExtWallet_1 = __importDefault(__webpack_require__(/*! ./ExtWallet */ \"./src/klaytn/ExtWallet.ts\"));\nclass Wallet extends eventcontainer_1.default {\n    constructor() {\n        super();\n        this.checkConnected();\n        ExtWallet_1.default.toss(\"connect\", this);\n    }\n    async checkConnected() {\n        if (await this.connected() === true) {\n            this.fireEvent(\"connect\");\n        }\n    }\n    async loadAddress() {\n        if (ExtWallet_1.default.installed === true) {\n            return await ExtWallet_1.default.loadAddress();\n        }\n    }\n    async connected() {\n        return await this.loadAddress() !== undefined;\n    }\n    async connect() {\n        if (ExtWallet_1.default.installed === true) {\n            return await ExtWallet_1.default.connect();\n        }\n        else {\n            alert(\"민팅에는 Kaikas가 필요합니다.\");\n        }\n    }\n}\nexports[\"default\"] = new Wallet();\n\n\n//# sourceURL=webpack://skynode-web3-boilerplate/./src/klaytn/Wallet.ts?");
-
-/***/ }),
-
 /***/ "./src/main.ts":
 /*!*********************!*\
   !*** ./src/main.ts ***!
@@ -539,7 +517,7 @@ eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst skyrouter_1 = __webpack_require__(/*! skyrouter */ \"./node_modules/skyrouter/lib/index.js\");\nconst Wallet_1 = __importDefault(__webpack_require__(/*! ./klaytn/Wallet */ \"./src/klaytn/Wallet.ts\"));\nconst msg_js_1 = __importDefault(__webpack_require__(/*! msg.js */ \"./node_modules/msg.js/msg.js\"));\nconst superagent_1 = __importDefault(__webpack_require__(/*! superagent */ \"./node_modules/superagent/lib/client.js\"));\nconst BrowserInfo_1 = __importDefault(__webpack_require__(/*! ./BrowserInfo */ \"./src/BrowserInfo.ts\"));\nconst Layout_1 = __importDefault(__webpack_require__(/*! ./view/Layout */ \"./src/view/Layout.ts\"));\nconst Home_1 = __importDefault(__webpack_require__(/*! ./view/Home */ \"./src/view/Home.ts\"));\n(async () => {\n    msg_js_1.default.language = BrowserInfo_1.default.language;\n    msg_js_1.default.parseCSV((await superagent_1.default.get(\"/msg.csv\")).text);\n    skyrouter_1.SkyRouter.route(\"**\", Layout_1.default);\n    skyrouter_1.SkyRouter.route(\"\", Home_1.default);\n    if (sessionStorage.__spa_path) {\n        skyrouter_1.SkyRouter.go(sessionStorage.__spa_path);\n        sessionStorage.removeItem(\"__spa_path\");\n    }\n    if (await Wallet_1.default.connected() !== true) {\n        await Wallet_1.default.connect();\n    }\n})();\n\n\n//# sourceURL=webpack://skynode-web3-boilerplate/./src/main.ts?");
+eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst skyrouter_1 = __webpack_require__(/*! skyrouter */ \"./node_modules/skyrouter/lib/index.js\");\nconst msg_js_1 = __importDefault(__webpack_require__(/*! msg.js */ \"./node_modules/msg.js/msg.js\"));\nconst superagent_1 = __importDefault(__webpack_require__(/*! superagent */ \"./node_modules/superagent/lib/client.js\"));\nconst BrowserInfo_1 = __importDefault(__webpack_require__(/*! ./BrowserInfo */ \"./src/BrowserInfo.ts\"));\nconst Layout_1 = __importDefault(__webpack_require__(/*! ./view/Layout */ \"./src/view/Layout.ts\"));\nconst Home_1 = __importDefault(__webpack_require__(/*! ./view/Home */ \"./src/view/Home.ts\"));\n(async () => {\n    msg_js_1.default.language = BrowserInfo_1.default.language;\n    msg_js_1.default.parseCSV((await superagent_1.default.get(\"/msg.csv\")).text);\n    skyrouter_1.SkyRouter.route(\"**\", Layout_1.default);\n    skyrouter_1.SkyRouter.route(\"\", Home_1.default);\n    if (sessionStorage.__spa_path) {\n        skyrouter_1.SkyRouter.go(sessionStorage.__spa_path);\n        sessionStorage.removeItem(\"__spa_path\");\n    }\n})();\n\n\n//# sourceURL=webpack://skynode-web3-boilerplate/./src/main.ts?");
 
 /***/ }),
 
