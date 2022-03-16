@@ -1,5 +1,10 @@
 import { DomNode, el } from "@hanul/skynode";
+import { BigNumber, BigNumberish, utils } from "ethers";
+import SkyUtil from "skyutil";
+import superagent from "superagent";
+import ConfirmingPopup from "./ConfirmingPopup";
 import Form from "./Form";
+import Sended from "./Sended";
 
 export default class Swaper extends DomNode {
     private fromForm: Form;
@@ -60,7 +65,8 @@ export default class Swaper extends DomNode {
             el("section.history-container",
                 el(".title", "The historical records"),
                 el("p", "Once the transfer has started, Can’t cancel. Please ‘Retry’ if any transfers are missing."),
-                el("table",
+                (this.sendedList = el(".sended-list")),
+                /*el("table",
                     el("thead",
                         el("tr",
                             el("td", "From Chain"),
@@ -129,30 +135,27 @@ export default class Swaper extends DomNode {
                             ),
                         ),
                     ),
-                ),
+                ),*/
             ),
         );
 
-        // this.fromForm.on(
-        //     "changeChain",
-        //     (chainId: number, originChainId: number) => {
-        //         if (this.toForm.chainId === chainId) {
-        //             this.toForm.changeChain(originChainId);
-        //         }
-        //         this.loadHistory();
-        //     }
-        // );
+        this.fromForm.on("changeChain", (chainId: number, originChainId: number) => {
+            if (this.toForm.chainId === chainId) {
+                this.toForm.changeChain(originChainId);
+            }
+            this.loadHistory();
+        });
 
-        // this.toForm.on("changeChain", (chainId: number, originChainId: number) => {
-        //     if (this.fromForm.chainId === chainId) {
-        //         this.fromForm.changeChain(originChainId);
-        //     }
-        //     this.loadHistory();
-        // });
+        this.toForm.on("changeChain", (chainId: number, originChainId: number) => {
+            if (this.fromForm.chainId === chainId) {
+                this.fromForm.changeChain(originChainId);
+            }
+            this.loadHistory();
+        });
 
-        // this.loadHistory();
-        // this.fromForm.on("connect", () => this.loadHistory());
-        // this.toForm.on("connect", () => this.loadHistory());
+        this.loadHistory();
+        this.fromForm.on("connect", () => this.loadHistory());
+        this.toForm.on("connect", () => this.loadHistory());
     }
 
     private loadHistoryNonce = 0;
@@ -163,116 +166,152 @@ export default class Swaper extends DomNode {
         return parts.join(".");
     }
 
-    // private async loadHistory() {
-    //     if (
-    //         this.fromForm.sender !== undefined &&
-    //         this.toForm.sender !== undefined
-    //     ) {
-    //         const sender = await this.fromForm.sender.loadAddress();
-    //         const receiver = await this.toForm.sender.loadAddress();
-    //         if (sender !== undefined && receiver !== undefined) {
-    //             const count = await this.fromForm.sender.sendCount(
-    //                 sender,
-    //                 this.toForm.chainId,
-    //                 receiver
-    //             );
-    //             this.loadHistoryNonce += 1;
-    //             const nonce = this.loadHistoryNonce;
-    //             this.sendedList.empty();
+    private async loadHistory() {
+        if (
+            this.fromForm.sender !== undefined &&
+            this.toForm.sender !== undefined
+        ) {
+            const sender = await this.fromForm.sender.loadAddress();
+            const receiver = await this.toForm.sender.loadAddress();
+            if (sender !== undefined && receiver !== undefined) {
+                const count = await this.fromForm.sender.sendingCounts(
+                    sender,
+                    this.toForm.chainId,
+                    receiver,
+                );
+                this.loadHistoryNonce += 1;
+                const nonce = this.loadHistoryNonce;
+                this.sendedList.empty();
 
-    //             SkyUtil.repeatResultAsync(count.toNumber(), async (sendId) => {
-    //                 if (this.loadHistoryNonce === nonce) {
-    //                     this.addSended(sender, receiver, BigNumber.from(sendId));
-    //                 }
-    //             });
-    //         }
-    //     }
-    // }
+                SkyUtil.repeatResultAsync(count.toNumber(), async (sendingId) => {
+                    if (this.loadHistoryNonce === nonce) {
+                        this.addSended(sender, receiver, BigNumber.from(sendingId));
+                    }
+                });
+            }
+        }
+    }
 
-    // public addSended(sender: string, receiver: string, sendId: BigNumber) {
-    //     if (
-    //         this.fromForm.sender !== undefined &&
-    //         this.toForm.sender !== undefined
-    //     ) {
-    //         new Sended(
-    //             this.fromForm.sender,
-    //             this.toForm.sender,
-    //             this.fromForm.chainId,
-    //             this.toForm.chainId,
-    //             sender,
-    //             receiver,
-    //             sendId.toNumber(),
-    //             async () => {
-    //                 if (this.fromForm.sender !== undefined) {
-    //                     const sended = await this.fromForm.sender.sended(
-    //                         sender,
-    //                         this.toForm.chainId,
-    //                         receiver,
-    //                         sendId
-    //                     );
-    //                     this.receiveOverHorizon(
-    //                         receiver,
-    //                         this.toForm.chainId,
-    //                         sender,
-    //                         sendId,
-    //                         sended
-    //                     );
-    //                 }
-    //             }
-    //         ).appendTo(this.sendedList, 0);
-    //     }
-    // }
+    public addSended(sender: string, receiver: string, sendingId: BigNumber) {
+        if (
+            this.fromForm.sender !== undefined &&
+            this.toForm.sender !== undefined
+        ) {
+            new Sended(
+                this.fromForm.sender,
+                this.toForm.sender,
+                this.fromForm.chainId,
+                this.toForm.chainId,
+                sender,
+                receiver,
+                sendingId.toNumber(),
+                async () => {
+                    if (this.fromForm.sender !== undefined) {
+                        const sended = await this.fromForm.sender.sendedAmounts(
+                            sender,
+                            this.toForm.chainId,
+                            receiver,
+                            sendingId,
+                        );
+                        this.receive(
+                            sender,
+                            this.toForm.chainId,
+                            receiver,
+                            sendingId,
+                            sended,
+                        );
+                    }
+                }
+            ).appendTo(this.sendedList, 0);
+        }
+    }
 
-    // public async sendOverHorizon(amount: BigNumberish) {
-    //     if (
-    //         this.fromForm.sender !== undefined &&
-    //         this.toForm.sender !== undefined
-    //     ) {
-    //         const receiver = await this.toForm.sender.loadAddress();
-    //         if (receiver !== undefined) {
-    //             await this.fromForm.sender.sendOverHorizon(
-    //                 this.toForm.chainId,
-    //                 receiver,
-    //                 amount
-    //             );
-    //         }
-    //     }
-    // }
+    public async send(amount: BigNumberish) {
+        if (
+            this.fromForm.sender !== undefined &&
+            this.toForm.sender !== undefined
+        ) {
+            const receiver = await this.toForm.sender.loadAddress();
+            if (receiver !== undefined) {
+                await this.fromForm.sender.sendToken(
+                    this.toForm.chainId,
+                    receiver,
+                    amount
+                );
+            }
+        }
+    }
 
-    // public async receiveOverHorizon(
-    //     _receiver: string,
-    //     toChain: BigNumberish,
-    //     sender: string,
-    //     sendId: BigNumber,
-    //     amount: BigNumberish
-    // ) {
-    //     if (
-    //         this.fromForm.sender !== undefined &&
-    //         this.toForm.sender !== undefined &&
-    //         this.toForm.chainId.toString() === toChain.toString()
-    //     ) {
-    //         const receiver = await this.toForm.sender.loadAddress();
-    //         if (receiver === _receiver) {
-    //             try {
-    //                 const result = await superagent
-    //                     .get(
-    //                         `https://api.chainhorizon.org/mix/signsend?receiver=${receiver}&fromChain=${this.fromForm.chainId
-    //                         }&toChain=${this.toForm.chainId
-    //                         }&sender=${sender}&sendId=${sendId}&amount=${amount.toString()}`
-    //                     )
-    //                     .send();
-    //                 await this.toForm.sender.receiveOverHorizon(
-    //                     this.fromForm.chainId,
-    //                     this.toForm.chainId,
-    //                     sender,
-    //                     sendId,
-    //                     amount,
-    //                     result.text
-    //                 );
-    //             } catch (error: any) {
-    //                 alert(`Error: ${error.message}`);
-    //             }
-    //         }
-    //     }
-    // }
+    public async receive(
+        sender: string,
+        toChainId: BigNumberish,
+        _receiver: string,
+        sendingId: BigNumber,
+        amount: BigNumberish
+    ) {
+        if (
+            this.fromForm.sender !== undefined &&
+            this.toForm.sender !== undefined &&
+            this.toForm.chainId.toString() === toChainId.toString()
+        ) {
+            const receiver = await this.toForm.sender.loadAddress();
+            if (receiver === _receiver) {
+                try {
+
+                    const uri = `sign?receiver=${receiver}&fromChainId=${this.fromForm.chainId
+                        }&toChainId=${this.toForm.chainId
+                        }&sender=${sender}&sendingId=${sendingId}&amount=${amount.toString()}`;
+
+                    const result1 = await superagent.get(`https://apm-test-api.gaiabridge.com/${uri}`).send();
+                    const result2 = await superagent.get(`https://apm-test-api.gaiabridge.com/${uri}`).send();
+                    const result3 = await superagent.get(`https://apm-test-api.gaiabridge.com/${uri}`).send();
+
+                    if (
+                        result1.body.confirming === true ||
+                        result2.body.confirming === true ||
+                        result3.body.confirming === true
+                    ) {
+                        new ConfirmingPopup(() => {
+                            this.receive(
+                                sender,
+                                toChainId,
+                                _receiver,
+                                sendingId,
+                                amount
+                            );
+                        });
+                    }
+
+                    else {
+
+                        let isFeePayed = this.fromForm.chainId === 8172;
+
+                        const vs: number[] = [];
+                        const rs: string[] = [];
+                        const ss: string[] = [];
+
+                        const sig1 = utils.splitSignature(result1.body.signedMessage);
+                        const sig2 = utils.splitSignature(result2.body.signedMessage);
+                        const sig3 = utils.splitSignature(result3.body.signedMessage);
+
+                        vs.push(sig1.v); rs.push(sig1.r); ss.push(sig1.s);
+                        vs.push(sig2.v); rs.push(sig2.r); ss.push(sig2.s);
+                        vs.push(sig3.v); rs.push(sig3.r); ss.push(sig3.s);
+
+                        await this.toForm.sender.receiveToken(
+                            sender,
+                            this.fromForm.chainId,
+                            receiver,
+                            amount,
+                            sendingId,
+                            isFeePayed,
+                            vs, rs, ss,
+                        );
+                    }
+                } catch (error: any) {
+                    alert(`Error: ${error.message}`);
+                }
+            }
+        }
+    }
 }

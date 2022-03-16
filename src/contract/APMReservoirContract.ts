@@ -9,7 +9,7 @@ import GaiaBridgeInterface from "./GaiaBridgeInterface";
 class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeInterface {
 
     constructor() {
-        super("0xcE1F2562cc390D65CCB7A505E81342a63fD838f9", APMReservoirArtifact.abi, [
+        super("0x7408C2E100FaC5302be554D860899216aCd76951", APMReservoirArtifact.abi, [
             "AddSigner",
             "RemoveSigner",
             "SendToken",
@@ -32,7 +32,7 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
     }
 
     public addTokenToWallet() {
-        //EthereumWallet.addToken(APMCoinContract.address, "APM", 18, "https://raw.githubusercontent.com/");
+        EthereumWallet.addToken(APMCoinContract.address, "APM", 18, "https://apm-test.gaiabridge.com/images/shared/icn/icn-apmcoin.png");
     }
 
     public async sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish) {

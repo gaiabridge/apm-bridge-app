@@ -21,28 +21,28 @@ class KAPMContract extends KIP7Contract implements GaiaBridgeInterface {
             for (const event of transferEvents) {
                 this.fireEvent("Transfer", event.returnValues[0], event.returnValues[1], BigNumber.from(event.returnValues[2]));
             }
-            const sendOverHorizonEvents = await this.getSendOverHorizonEvents(prevBlock, currentBlock);
-            for (const event of sendOverHorizonEvents) {
-                this.fireEvent("SendOverHorizon", event.returnValues[0], BigNumber.from(event.returnValues[1]), event.returnValues[2], BigNumber.from(event.returnValues[3]), BigNumber.from(event.returnValues[4]));
+            const sendEvents = await this.getSendTokenEvents(prevBlock, currentBlock);
+            for (const event of sendEvents) {
+                this.fireEvent("SendToken", event.returnValues[0], BigNumber.from(event.returnValues[1]), event.returnValues[2], BigNumber.from(event.returnValues[3]), BigNumber.from(event.returnValues[4]), event.returnValues[5]);
             }
-            const receiveOverHorizonEvents = await this.getReceiveOverHorizonEvents(prevBlock, currentBlock);
-            for (const event of receiveOverHorizonEvents) {
-                this.fireEvent("ReceiveOverHorizon", event.returnValues[0], BigNumber.from(event.returnValues[1]), event.returnValues[2], BigNumber.from(event.returnValues[3]), BigNumber.from(event.returnValues[4]));
+            const receiveTokenEvents = await this.getReceiveTokenEvents(prevBlock, currentBlock);
+            for (const event of receiveTokenEvents) {
+                this.fireEvent("ReceiveToken", event.returnValues[0], BigNumber.from(event.returnValues[1]), event.returnValues[2], BigNumber.from(event.returnValues[3]), BigNumber.from(event.returnValues[4]), event.returnValues[5]);
             }
             prevBlock = currentBlock + 1;
         }, 2000);
     }
 
-    private async getSendOverHorizonEvents(startBlock: number, endBlock: number) {
-        const events = await this.contract.getPastEvents("SendOverHorizon", {
+    private async getSendTokenEvents(startBlock: number, endBlock: number) {
+        const events = await this.contract.getPastEvents("SendToken", {
             fromBlock: startBlock,
             toBlock: endBlock,
         });
         return events;
     }
 
-    private async getReceiveOverHorizonEvents(startBlock: number, endBlock: number) {
-        const events = await this.contract.getPastEvents("ReceiveOverHorizon", {
+    private async getReceiveTokenEvents(startBlock: number, endBlock: number) {
+        const events = await this.contract.getPastEvents("ReceiveToken", {
             fromBlock: startBlock,
             toBlock: endBlock,
         });
@@ -58,7 +58,7 @@ class KAPMContract extends KIP7Contract implements GaiaBridgeInterface {
     }
 
     public addTokenToWallet() {
-        //KlaytnWallet.addToken(this.address, "KAPM", 18, "https://raw.githubusercontent.com/");
+        KlaytnWallet.addToken(this.address, "KAPM", 18, "https://apm-test.gaiabridge.com/images/shared/icn/icn-apmcoin.png");
     }
 
     public async sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish) {

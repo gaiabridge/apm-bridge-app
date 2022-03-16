@@ -1,15 +1,18 @@
 import { DomNode } from "@hanul/skynode";
+import GaiaBridgeInterface from "../contract/GaiaBridgeInterface";
 export default class Sended extends DomNode {
-    private fromChain;
-    private toChain;
+    private fromSender;
+    private toSender;
+    private fromChainId;
+    private toChainId;
     private sender;
     private receiver;
-    private sendId;
+    private sendingId;
     private retry;
-    constructor(fromChain: number, toChain: number, sender: string, receiver: string, sendId: number, retry: () => void);
+    constructor(fromSender: GaiaBridgeInterface, toSender: GaiaBridgeInterface, fromChainId: number, toChainId: number, sender: string, receiver: string, sendingId: number, retry: () => void);
     private load;
     private getFormatting;
-    private receiveOverHorizonHandler;
+    private receiveTokenHandler;
     delete(): void;
 }
 //# sourceMappingURL=Sended.d.ts.map

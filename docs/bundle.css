@@ -173,7 +173,20 @@ body {
   background: #f5f5f5;
   margin: auto;
 }
-.dialogue.transaction-alert {
+.popup-background {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  padding: 20px 0;
+}
+.dialogue.confirming-popup {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -187,12 +200,12 @@ body {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   padding: 30px;
 }
-.dialogue.transaction-alert > img {
+.dialogue.confirming-popup > img {
   width: 100px;
   height: 100px;
   animation: rotate_image 60s linear infinite;
 }
-.dialogue.transaction-alert > p {
+.dialogue.confirming-popup > p {
   font-weight: 700;
   font-size: 16px;
   display: flex;
@@ -204,19 +217,6 @@ body {
   100% {
     transform: rotate(360deg);
   }
-}
-.popup-background {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 99999;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-  padding: 20px 0;
 }
 .swaper {
   width: 100%;

@@ -4,8 +4,8 @@ import KIP7Contract from "./klaytn-standard/KIP7Contract";
 declare class KAPMContract extends KIP7Contract implements GaiaBridgeInterface {
     constructor();
     private watch;
-    private getSendOverHorizonEvents;
-    private getReceiveOverHorizonEvents;
+    private getSendTokenEvents;
+    private getReceiveTokenEvents;
     loadAddress(): Promise<string | undefined>;
     connect(): Promise<void>;
     addTokenToWallet(): void;

@@ -1,9 +1,7 @@
 import { DomNode, el } from "@hanul/skynode";
 import { View, ViewParams } from "skyrouter";
-import msg from "msg.js";
-import Layout from "./Layout";
-import Form from "../component/Form";
 import Swaper from "../component/Swaper";
+import Layout from "./Layout";
 
 export default class Mining implements View {
 
