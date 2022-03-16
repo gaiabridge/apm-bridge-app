@@ -74,7 +74,7 @@ export default class Form extends DomNode {
                 const balance = await this.sender.balanceOf(owner);
                 this.balanceDisplay
                     .empty()
-                    .appendText(`${utils.formatUnits(balance)} PAX`);
+                    .appendText(`${utils.formatUnits(balance)} APM`);
 
                 this.buttonContainer.append(
                     el("a.add-token-to-wallet-button", "지갑에 토큰 추가하기", {

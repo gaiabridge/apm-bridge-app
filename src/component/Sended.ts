@@ -29,7 +29,7 @@ export default class Sended extends DomNode {
         console.log(received);
 
         this.empty().append(
-            el(".message", `${await this.getFormatting(sended)} MIX`,),
+            el(".message", `${await this.getFormatting(sended)} APM`,),
             received === true ? el(".done", "전송 완료") : el("a.retry-button", "재시도", {
                 click: () => this.retry(),
             }),
