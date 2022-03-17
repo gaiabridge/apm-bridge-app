@@ -47,6 +47,11 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
         }
     }
 
+    public async allowance() {
+        const owner = await EthereumWallet.loadAddress();
+        await APMCoinContract.allowance(owner!, this.address);
+    }
+
     public async sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber> {
         return await this.contract.sendedAmounts(sender, toChainId, receiver, sendingId);
     }

@@ -11,7 +11,6 @@ export default class Form extends DomNode {
     private chainIcon: DomNode<HTMLImageElement>;
     private chainSelect: DomNode<HTMLSelectElement>;
     private balanceDisplay: DomNode;
-    private inputContainer: DomNode;
     private buttonContainer: DomNode;
 
     constructor(
@@ -22,7 +21,7 @@ export default class Form extends DomNode {
         super("form")
         this.append(
             this.chainIcon = el("img", { src: "/images/shared/icn/icn-klaytn.svg", alt: "chain image" }),
-            el("p", "FROM"),
+            isFrom ? el("p", "FROM") : el("p", "TO"),
             this.chainSelect = el("select",
                 el("option", "Klaytn", { value: "8217" }),
                 el("option", "Ethereum", { value: "1" }),
@@ -34,9 +33,7 @@ export default class Form extends DomNode {
                     },
                 }
             ),
-            isFrom ? el("span.help-text", "에서") : el("span.help-text", "으로"),
-            (this.balanceDisplay = el(".balance")),
-            (this.inputContainer = el(".input-container")),
+            (this.balanceDisplay = el("p")),
             (this.buttonContainer = el(".button-container")),
         );
         this.changeChain(chainId);
@@ -65,7 +62,6 @@ export default class Form extends DomNode {
     }
 
     private async loadBalance() {
-        this.inputContainer.empty();
         this.buttonContainer.empty();
 
         if (this.sender !== undefined) {
@@ -83,21 +79,6 @@ export default class Form extends DomNode {
                         },
                     }),
                 );
-
-                if (this.isFrom === true) {
-                    const input: DomNode<HTMLInputElement> = el("input", {
-                        placeholder: "보낼 수량",
-                    });
-                    input.appendTo(this.inputContainer);
-
-                    this.buttonContainer.append(
-                        el("a.send-button", "보내기", {
-                            click: () => this.swaper.send(
-                                utils.parseEther(input.domElement.value)
-                            ),
-                        })
-                    );
-                }
             } else {
                 this.balanceDisplay.empty().appendText("잔액 불러오기 실패");
                 this.buttonContainer.append(

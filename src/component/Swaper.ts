@@ -2,6 +2,9 @@ import { DomNode, el } from "@hanul/skynode";
 import { BigNumber, BigNumberish, utils } from "ethers";
 import SkyUtil from "skyutil";
 import superagent from "superagent";
+import APMCoinContract from "../contract/APMCoinContract";
+import APMReservoirContract from "../contract/APMReservoirContract";
+import EthereumWallet from "../ethereum/EthereumWallet";
 import ConfirmingPopup from "./ConfirmingPopup";
 import Form from "./Form";
 import Sended from "./Sended";
@@ -9,10 +12,11 @@ import Sended from "./Sended";
 export default class Swaper extends DomNode {
     private fromForm: Form;
     private toForm: Form;
-    private amountInput: DomNode;
+    private amountInput: DomNode<HTMLInputElement>;
 
     private sendedList: DomNode;
     private feeDisplay: DomNode;
+    private receivedDisplay: DomNode;
 
     constructor() {
         super(".swaper");
@@ -27,7 +31,12 @@ export default class Swaper extends DomNode {
                 el(".amount-container",
                     el(".title", "Amount"),
                     el(".input-container",
-                        this.amountInput = el("input"),
+                        this.amountInput = el("input", {
+                            change: () => {
+                                this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) * 0.3 / 100}`));
+                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) - Number(this.amountInput.domElement.value) * 0.3 / 100}`));
+                            }
+                        }),
                     ),
                 ),
                 el(".fee-container",
@@ -36,7 +45,7 @@ export default class Swaper extends DomNode {
                         el(".caption", "0.3% (Charged by Gaia Protocol)"),
                     ),
                     el(".text-container",
-                        this.feeDisplay = el(".amount", this.numberWithCommas("30")),
+                        this.feeDisplay = el(".amount", this.numberWithCommas("0", 3)),
                         el(".amount-caption", "APM"),
                     ),
                 ),
@@ -45,7 +54,7 @@ export default class Swaper extends DomNode {
                         el(".title", "Estimated Received"),
                     ),
                     el(".text-container",
-                        this.feeDisplay = el(".amount", this.numberWithCommas("9999999", 3)),
+                        this.receivedDisplay = el(".amount", this.numberWithCommas("0", 3)),
                         el(".amount-caption", "APM"),
                     )
                 ),
@@ -57,16 +66,23 @@ export default class Swaper extends DomNode {
                 ),
                 el(".button-container",
                     el(".content",
-                        el("button.disable-button", "Approve"),
-                        el("button", "Transfer"),
+                        el("button", "Approve", {
+                            "disabled": "",
+                            click: async () => {
+                            }
+                        }),
+                        el("button", "Transfer", {
+                            click: () => this.send(
+                                utils.parseEther(this.amountInput.domElement.value)
+                            ),
+                        }),
                     ),
                 ),
             ),
             el("section.history-container",
                 el(".title", "The historical records"),
                 el("p", "Once the transfer has started, Can’t cancel. Please ‘Retry’ if any transfers are missing."),
-                (this.sendedList = el(".sended-list")),
-                /*el("table",
+                this.sendedList = el("table",
                     el("thead",
                         el("tr",
                             el("td", "From Chain"),
@@ -77,65 +93,7 @@ export default class Swaper extends DomNode {
                             el("td", "Status"),
                         ),
                     ),
-                    el("tbody",
-                        el("tr",
-                            el("td",
-                                el(".chain-container",
-                                    el("img", { src: "/images/shared/icn/icn-klaytn.svg", alt: "icn-klaytn" }),
-                                    el("p", "Klaytn"),
-                                ),
-                            ),
-                            el("td",
-                                el(".chain-container",
-                                    el("img", { src: "/images/shared/icn/icn-ethereum.svg", alt: "icn-ethereum" }),
-                                    el("p", "Ethereum"),
-                                ),
-                            ),
-                            el("td",
-                                el("p", "30 APM"),
-                            ),
-                            el("td",
-                                el("p", "3 APM"),
-                            ),
-                            el("td",
-                                el("p", "2021-12-14 17:00:00"),
-                            ),
-                            el("td",
-                                el(".status-container",
-                                    el("a", "Etherscan"),
-                                    el("a", "Klaytnscope"),
-                                ),
-                            ),
-                        ),
-                        el("tr",
-                            el("td",
-                                el(".chain-container",
-                                    el("img", { src: "/images/shared/icn/icn-ethereum.svg", alt: "icn-ethereum" }),
-                                    el("p", "Ethereum"),
-                                ),
-
-                            ),
-                            el("td",
-                                el(".chain-container",
-                                    el("img", { src: "/images/shared/icn/icn-klaytn.svg", alt: "icn-klaytn" }),
-                                    el("p", "Klaytn"),
-                                ),
-                            ),
-                            el("td",
-                                el("p", "30 APM"),
-                            ),
-                            el("td",
-                                el("p", "3 APM"),
-                            ),
-                            el("td",
-                                el("p", "2021-12-14 17:00:00"),
-                            ),
-                            el("td",
-                                el("button", "Retry"),
-                            ),
-                        ),
-                    ),
-                ),*/
+                ),
             ),
         );
 
@@ -181,7 +139,6 @@ export default class Swaper extends DomNode {
                 );
                 this.loadHistoryNonce += 1;
                 const nonce = this.loadHistoryNonce;
-                this.sendedList.empty();
 
                 SkyUtil.repeatResultAsync(count.toNumber(), async (sendingId) => {
                     if (this.loadHistoryNonce === nonce) {
