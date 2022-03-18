@@ -1,5 +1,5 @@
 import { DomNode, el } from "@hanul/skynode";
-import { BigNumber, BigNumberish, utils } from "ethers";
+import { BigNumber, BigNumberish, utils, constants } from "ethers";
 import SkyUtil from "skyutil";
 import superagent from "superagent";
 import APMCoinContract from "../contract/APMCoinContract";
@@ -17,6 +17,7 @@ export default class Swaper extends DomNode {
     private sendedList: DomNode;
     private feeDisplay: DomNode;
     private receivedDisplay: DomNode;
+    private approveButton: DomNode<HTMLButtonElement>;
 
     constructor() {
         super(".swaper");
@@ -66,9 +67,10 @@ export default class Swaper extends DomNode {
                 ),
                 el(".button-container",
                     el(".content",
-                        el("button", "Approve", {
+                        this.approveButton = el("button", "Approve", {
                             "disabled": "",
                             click: async () => {
+                                await APMCoinContract.approve("0x7408C2E100FaC5302be554D860899216aCd76951", constants.MaxUint256);
                             }
                         }),
                         el("button", "Transfer", {
@@ -97,6 +99,8 @@ export default class Swaper extends DomNode {
             ),
         );
 
+        this.getApprove(1);
+
         this.fromForm.on("changeChain", (chainId: number, originChainId: number) => {
             if (this.toForm.chainId === chainId) {
                 this.toForm.changeChain(originChainId);
@@ -122,6 +126,17 @@ export default class Swaper extends DomNode {
         const parts = String(+(+x).toFixed(fixed)).split(".");
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return parts.join(".");
+    }
+
+    private async getApprove(amount: BigNumberish) {
+        const owner = await EthereumWallet.loadAddress();
+
+        if ((await APMCoinContract.allowance(owner!, "0x7408C2E100FaC5302be554D860899216aCd76951")).lt(amount)) {
+            this.approveButton.domElement.disabled = false;
+        } else {
+            this.approveButton.domElement.disabled = true;
+        }
+
     }
 
     private async loadHistory() {
