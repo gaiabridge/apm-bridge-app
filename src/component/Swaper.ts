@@ -140,6 +140,7 @@ export default class Swaper extends DomNode {
     }
 
     private async loadHistory() {
+        this.sendedList.empty();
         if (
             this.fromForm.sender !== undefined &&
             this.toForm.sender !== undefined
