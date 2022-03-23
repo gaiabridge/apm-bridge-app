@@ -12,6 +12,7 @@ declare class EthereumWallet extends EventContainer {
     loadChainId(): Promise<number>;
     connected(): Promise<boolean>;
     connect(): Promise<void>;
+    disconnect(): Promise<void>;
     disconnectFromWalletConnect(): Promise<void>;
     changeNetwork(chainId: number, chainName: string, currency: {
         name: string;

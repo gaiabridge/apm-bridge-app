@@ -1,9 +1,9 @@
 import { DomNode, el } from "@hanul/skynode";
-import { BigNumber, utils } from "ethers";
+import { BigNumber } from "ethers";
 import CommonUtil from "../CommonUtil";
 import APMReservoirContract from "../contract/APMReservoirContract";
 import GaiaBridgeInterface from "../contract/GaiaBridgeInterface";
-import KAPMContract from "../contract/KAPMContract";
+import KAPMReservoirContract from "../contract/KAPMReservoirContract";
 import EthereumWallet from "../ethereum/EthereumWallet";
 import KlaytnWallet from "../klaytn/KlaytnWallet";
 import Swaper from "./Swaper";
@@ -13,6 +13,7 @@ export default class Form extends DomNode {
 
     private chainIcon: DomNode<HTMLImageElement>;
     private chainSelect: DomNode<HTMLSelectElement>;
+    private balanceDisplay: DomNode;
     private addressDisplay: DomNode;
     private disconnectButton: DomNode;
     private buttonContainer: DomNode;
@@ -37,7 +38,7 @@ export default class Form extends DomNode {
                     },
                 }
             ),
-            // (this.balanceDisplay = el("p")),
+            (this.balanceDisplay = el("p")),
             el(".address-container",
                 (this.addressDisplay = el("p")),
                 (this.disconnectButton = el("a.disconnect",
@@ -58,7 +59,7 @@ export default class Form extends DomNode {
         this.sender?.off("SendToken", this.sendHandler);
 
         if (chainId === 8217) {
-            this.sender = KAPMContract;
+            this.sender = KAPMReservoirContract;
             this.chainIcon.domElement.src = "/images/shared/icn/icn-klaytn.svg";
 
             const address = await KlaytnWallet.loadAddress();

@@ -5,6 +5,7 @@ declare class KlaytnWallet extends EventContainer {
     loadAddress(): Promise<string | undefined>;
     connected(): Promise<boolean>;
     connect(): Promise<void>;
+    disconnect(): Promise<void>;
     loadChainId(): Promise<any>;
     addToken(address: string, symbol: string, decimals: number, image: string): Promise<void>;
 }

@@ -3,11 +3,12 @@ import { BigNumber, utils } from "ethers";
 import GaiaBridgeInterface from "../contract/GaiaBridgeInterface";
 
 export default class Sended extends DomNode {
-    private fromImage: DomNode<HTMLImageElement>;
-    private toImage: DomNode<HTMLImageElement>;
 
-    private fromChainText: DomNode;
-    private toChainText: DomNode<HTMLImageElement>;
+    private fromImage: DomNode<HTMLImageElement> | undefined;
+    private toImage: DomNode<HTMLImageElement> | undefined;
+
+    private fromChainText: DomNode | undefined;
+    private toChainText: DomNode<HTMLImageElement> | undefined;
 
     constructor(
         private fromSender: GaiaBridgeInterface,
@@ -69,19 +70,27 @@ export default class Sended extends DomNode {
 
     private async loadChain(): Promise<void> {
         if (this.fromChainId === 8217) {
-            this.fromImage.domElement.src = "/images/shared/icn/icn-klaytn.svg";
-            this.fromChainText.empty().appendText("Klaytn");
+            if (this.fromImage !== undefined) {
+                this.fromImage.domElement.src = "/images/shared/icn/icn-klaytn.svg";
+            }
+            this.fromChainText?.empty().appendText("Klaytn");
         } else if (this.fromChainId === 1) {
-            this.fromImage.domElement.src = "/images/shared/icn/icn-ethereum.svg";
-            this.fromChainText.empty().appendText("Ethereum");
+            if (this.fromImage !== undefined) {
+                this.fromImage.domElement.src = "/images/shared/icn/icn-ethereum.svg";
+            }
+            this.fromChainText?.empty().appendText("Ethereum");
         }
 
         if (this.toChainId === 8217) {
-            this.toImage.domElement.src = "/images/shared/icn/icn-klaytn.svg";
-            this.toChainText.empty().appendText("Klaytn");
+            if (this.toImage !== undefined) {
+                this.toImage.domElement.src = "/images/shared/icn/icn-klaytn.svg";
+            }
+            this.toChainText?.empty().appendText("Klaytn");
         } else if (this.toChainId === 1) {
-            this.toImage.domElement.src = "/images/shared/icn/icn-ethereum.svg";
-            this.toChainText.empty().appendText("Ethereum");
+            if (this.toImage !== undefined) {
+                this.toImage.domElement.src = "/images/shared/icn/icn-ethereum.svg";
+            }
+            this.toChainText?.empty().appendText("Ethereum");
         }
     }
 

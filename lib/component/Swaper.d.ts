@@ -6,9 +6,13 @@ export default class Swaper extends DomNode {
     private amountInput;
     private sendedList;
     private feeDisplay;
+    private receivedDisplay;
+    private balanceDisplay;
+    private approveButton;
     constructor();
     private loadHistoryNonce;
     numberWithCommas(x: string, fixed?: number): string;
+    private getApprove;
     private loadHistory;
     addSended(sender: string, receiver: string, sendingId: BigNumber): void;
     send(amount: BigNumberish): Promise<void>;
