@@ -17,6 +17,7 @@ export default class Swaper extends DomNode {
     private sendedList: DomNode;
     private feeDisplay: DomNode;
     private receivedDisplay: DomNode;
+    private balanceDisplay: DomNode;
     private approveButton: DomNode<HTMLButtonElement>;
 
     constructor() {
@@ -26,15 +27,27 @@ export default class Swaper extends DomNode {
             el("section.swap-container",
                 el(".form-container",
                     (this.fromForm = new Form(this, 8217, true)),
-                    el("img.arrow", { src: "/images/shared/icn/icn-arrow-right.svg", height: "50", alt: "icn-arrow-right" }),
+                    el("a", {
+                        click: () => {
+                            // TODO: 누를 시 FROM<->TO 변환
+                        }
+                    },
+                        el("img.arrow", { src: "/images/shared/icn/icn-arrow-right.svg", height: "50", alt: "icn-arrow-right" })
+                    ),
                     (this.toForm = new Form(this, 1))
                 ),
                 el(".amount-container",
-                    el(".title", "Amount"),
+                    el(".title-container",
+                        el(".title", "Amount"),
+                        this.balanceDisplay = el("p", ""),
+                    ),
                     el(".input-container",
                         el("a", "Max", {
-                            click: () => {
+                            click: async () => {
+                                const owner = await this.fromForm.sender!.loadAddress();
+                                const balance = await this.fromForm.sender!.balanceOf(owner!);
 
+                                this.amountInput.domElement.value = utils.formatEther(balance);
                             }
                         }),
                         this.amountInput = el("input", {
@@ -145,6 +158,12 @@ export default class Swaper extends DomNode {
     }
 
     private async loadHistory() {
+        const owner = await this.fromForm.sender!.loadAddress();
+        const balance = await this.fromForm.sender!.balanceOf(owner!);
+        this.balanceDisplay
+            .empty()
+            .appendText(`${utils.formatUnits(balance)} APM`);
+
         if (
             this.fromForm.sender !== undefined &&
             this.toForm.sender !== undefined

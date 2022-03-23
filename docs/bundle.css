@@ -345,10 +345,20 @@ body {
 .swaper > .swap-container > .amount-container {
   margin-top: 32px;
 }
-.swaper > .swap-container > .amount-container > .title {
+.swaper > .swap-container > .amount-container > .title-container {
+  display: flex;
+  justify-content: space-between;
+}
+.swaper > .swap-container > .amount-container > .title-container > .title {
   font-size: 14px;
   font-weight: bold;
   padding-bottom: 8px;
+}
+.swaper > .swap-container > .amount-container > .title-container > p {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #969696;
 }
 .swaper > .swap-container > .amount-container > .input-container {
   position: relative;

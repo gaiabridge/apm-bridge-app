@@ -13,7 +13,6 @@ export default class Form extends DomNode {
 
     private chainIcon: DomNode<HTMLImageElement>;
     private chainSelect: DomNode<HTMLSelectElement>;
-    private balanceDisplay: DomNode;
     private addressDisplay: DomNode;
     private disconnectButton: DomNode;
     private buttonContainer: DomNode;
@@ -38,7 +37,7 @@ export default class Form extends DomNode {
                     },
                 }
             ),
-            (this.balanceDisplay = el("p")),
+            // (this.balanceDisplay = el("p")),
             el(".address-container",
                 (this.addressDisplay = el("p")),
                 (this.disconnectButton = el("a.disconnect",
@@ -92,10 +91,6 @@ export default class Form extends DomNode {
         if (this.sender !== undefined) {
             const owner = await this.sender.loadAddress();
             if (owner !== undefined) {
-                const balance = await this.sender.balanceOf(owner);
-                this.balanceDisplay
-                    .empty()
-                    .appendText(`${utils.formatUnits(balance)} APM`);
 
                 this.buttonContainer.append(
                     el("a.add-token-to-wallet-button", "지갑에 토큰 추가하기", {
