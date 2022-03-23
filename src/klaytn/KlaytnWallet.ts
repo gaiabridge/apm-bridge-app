@@ -34,6 +34,9 @@ class KlaytnWallet extends EventContainer {
         }
     }
 
+    public async disconnect() {
+    }
+
     public async loadChainId() {
         if (Kaikas.installed === true) {
             return await Kaikas.loadChainId();

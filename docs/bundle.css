@@ -261,6 +261,7 @@ body {
   font-size: 12px;
   line-height: 14px;
   color: #848C9B;
+  margin-bottom: 4px;
 }
 .swaper > .swap-container > .form-container > form > a {
   max-width: 138px;
@@ -277,6 +278,19 @@ body {
 .swaper > .swap-container > .form-container > form > .balance {
   font-size: 14px;
   color: black;
+}
+.swaper > .swap-container > .form-container > form > .disconnect {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  color: #4874F6;
+  background-color: transparent;
+  margin-bottom: 4px;
+  padding: 0px;
+}
+.swaper > .swap-container > .form-container > form > .disconnect:hover {
+  color: #848C9B;
 }
 .swaper > .swap-container > .form-container > form > .input-container > input {
   width: 100%;
@@ -297,8 +311,8 @@ body {
   font-size: 12px;
   line-height: 14px;
   color: #4874F6;
-  gap: 8px;
-  margin: 8px 0px;
+  gap: 4px;
+  margin: 4px 0px;
 }
 .swaper > .swap-container > .form-container > form > .button-container > .connect-button {
   display: flex;

@@ -1,8 +1,11 @@
 import { DomNode, el } from "@hanul/skynode";
 import { BigNumber, utils } from "ethers";
+import CommonUtil from "../CommonUtil";
 import APMReservoirContract from "../contract/APMReservoirContract";
 import GaiaBridgeInterface from "../contract/GaiaBridgeInterface";
 import KAPMContract from "../contract/KAPMContract";
+import EthereumWallet from "../ethereum/EthereumWallet";
+import KlaytnWallet from "../klaytn/KlaytnWallet";
 import Swaper from "./Swaper";
 
 export default class Form extends DomNode {
@@ -11,6 +14,8 @@ export default class Form extends DomNode {
     private chainIcon: DomNode<HTMLImageElement>;
     private chainSelect: DomNode<HTMLSelectElement>;
     private balanceDisplay: DomNode;
+    private addressDisplay: DomNode;
+    private disconnectButton: DomNode;
     private buttonContainer: DomNode;
 
     constructor(
@@ -21,7 +26,7 @@ export default class Form extends DomNode {
         super("form")
         this.append(
             this.chainIcon = el("img", { src: "/images/shared/icn/icn-klaytn.svg", alt: "chain image" }),
-            isFrom ? el("p", "FROM") : el("p", "TO"),
+            this.isFrom ? el("p", "FROM") : el("p", "TO"),
             this.chainSelect = el("select",
                 el("option", "Klaytn", { value: "8217" }),
                 el("option", "Ethereum", { value: "1" }),
@@ -34,6 +39,15 @@ export default class Form extends DomNode {
                 }
             ),
             (this.balanceDisplay = el("p")),
+            (this.addressDisplay = el("p")),
+            (this.disconnectButton = el("a.disconnect", {
+                click: async () => {
+                    if (this.chainId === 8217) {
+                    }
+                    if (this.chainId === 1) {
+                    }
+                }
+            })),
             (this.buttonContainer = el(".button-container")),
         );
         this.changeChain(chainId);
@@ -50,9 +64,27 @@ export default class Form extends DomNode {
         if (chainId === 8217) {
             this.sender = KAPMContract;
             this.chainIcon.domElement.src = "/images/shared/icn/icn-klaytn.svg";
+
+            const address = await KlaytnWallet.loadAddress();
+            if (address !== undefined) {
+                this.addressDisplay.empty().appendText(CommonUtil.shortenAddress(address!));
+                this.disconnectButton.empty().appendText("지갑 연결 해제");
+            } else {
+                this.addressDisplay.empty();
+                this.disconnectButton.empty();
+            }
         } else if (chainId === 1) {
             this.sender = APMReservoirContract;
             this.chainIcon.domElement.src = "/images/shared/icn/icn-ethereum.svg";
+
+            const address = await EthereumWallet.loadAddress();
+            if (address !== undefined) {
+                this.addressDisplay.empty().appendText(CommonUtil.shortenAddress(address!));
+                this.disconnectButton.empty().appendText("지갑 연결 해제");
+            } else {
+                this.addressDisplay.empty();
+                this.disconnectButton.empty();
+            }
         }
         await this.loadBalance();
 
