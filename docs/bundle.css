@@ -228,7 +228,7 @@ body {
   width: 100%;
   background: #EAF2FD;
   border-radius: 8px;
-  padding: 32px;
+  padding: 60px;
 }
 .swaper > .swap-container > .form-container {
   display: flex;
@@ -247,8 +247,8 @@ body {
 .swaper > .swap-container > .form-container > form > select {
   max-width: 138px;
   width: 100%;
-  margin-top: 12px;
-  margin-bottom: 17px;
+  margin-top: 8px;
+  margin-bottom: 12px;
   background: #FFFFFF;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
@@ -258,10 +258,27 @@ body {
 .swaper > .swap-container > .form-container > form > p {
   font-style: normal;
   font-weight: normal;
-  font-size: 12px;
-  line-height: 14px;
+  font-size: 14px;
+  line-height: 17px;
   color: #848C9B;
   margin-bottom: 4px;
+  text-align: center;
+}
+.swaper > .swap-container > .form-container > form > .address-container {
+  display: flex;
+  align-items: center;
+}
+.swaper > .swap-container > .form-container > form > .address-container > p {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #848C9B;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.swaper > .swap-container > .form-container > form > .address-container > a > img {
+  margin-left: 4px;
 }
 .swaper > .swap-container > .form-container > form > a {
   max-width: 138px;
@@ -325,10 +342,16 @@ body {
   background: #4874F6;
   border-radius: 4px;
 }
+.swaper > .swap-container > .amount-container {
+  margin-top: 32px;
+}
 .swaper > .swap-container > .amount-container > .title {
   font-size: 14px;
   font-weight: bold;
   padding-bottom: 8px;
+}
+.swaper > .swap-container > .amount-container > .input-container {
+  position: relative;
 }
 .swaper > .swap-container > .amount-container > .input-container > input {
   width: 100%;
@@ -336,7 +359,19 @@ body {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
   padding: 7px 4px;
+  padding-right: 40px;
   text-align: right;
+  color: #4874f6;
+}
+.swaper > .swap-container > .amount-container > .input-container > a {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+.swaper > .swap-container > .amount-container > .input-container > a:hover {
   color: #4874f6;
 }
 .swaper > .swap-container > .fee-container {
@@ -408,7 +443,8 @@ body {
   color: #FFFFFF;
 }
 .swaper > .swap-container > .warning-container > .content > p {
-  margin-left: 8px;
+  text-align: center;
+  margin-left: 12px;
 }
 .swaper > .swap-container > .button-container {
   display: flex;
@@ -449,11 +485,11 @@ body {
   color: #969696;
   font-size: 12px;
   line-height: 14px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 .swaper > .history-container > table {
   width: 100%;
-  margin-top: 24px;
+  margin-top: 8px;
 }
 .swaper > .history-container > table > thead {
   font-weight: bold;
@@ -492,6 +528,10 @@ body {
   border-radius: 4px;
   color: #FFFFFF;
   padding: 5px 16px;
+}
+.swaper > .history-container > table > tbody > tr > td > button:disabled {
+  background: #C8C8C8;
+  color: #E0E0E0;
 }
 .swaper > .history-container > table > tbody > tr > td > .status-container {
   font-weight: 600;

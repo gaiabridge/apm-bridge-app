@@ -32,6 +32,11 @@ export default class Swaper extends DomNode {
                 el(".amount-container",
                     el(".title", "Amount"),
                     el(".input-container",
+                        el("a", "Max", {
+                            click: () => {
+
+                            }
+                        }),
                         this.amountInput = el("input", {
                             change: () => {
                                 this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) * 0.3 / 100}`));
@@ -62,18 +67,18 @@ export default class Swaper extends DomNode {
                 el(".warning-container",
                     el(".content",
                         el("img", { src: "/images/shared/icn/icn-warning.svg", alt: "icn-warning.svg" }),
-                        el("p", "Gas costs are required for both chains to use the bridge."),
+                        el("p", "브릿지 이용 시 양 체인에 가스비가 발생됩니다.\n보내는 체인이 이더리움일 경우 32컨펌 후 Claim 서명이 필요합니다"),
                     ),
                 ),
                 el(".button-container",
                     el(".content",
-                        this.approveButton = el("button", "Approve", {
+                        this.approveButton = el("button", "Approve\n토큰 사용 허가", {
                             "disabled": "",
                             click: async () => {
                                 await APMCoinContract.approve("0x7408C2E100FaC5302be554D860899216aCd76951", constants.MaxUint256);
                             }
                         }),
-                        el("button", "Transfer", {
+                        el("button", "Transfer\n전송하기", {
                             click: () => this.send(
                                 utils.parseEther(this.amountInput.domElement.value)
                             ),
@@ -82,8 +87,8 @@ export default class Swaper extends DomNode {
                 ),
             ),
             el("section.history-container",
-                el(".title", "The historical records"),
-                el("p", "Once the transfer has started, Can’t cancel. Please ‘Retry’ if any transfers are missing."),
+                el(".title", "전송 이력"),
+                el("p", "트랜잭션이 한번 시작되면 되돌릴 수 없습니다.\nTransfer후 Claim 까지 완료되어야 체인 간 전송이 완료됩니다"),
                 this.sendedList = el("table",
                     el("thead",
                         el("tr",
@@ -140,7 +145,6 @@ export default class Swaper extends DomNode {
     }
 
     private async loadHistory() {
-        this.sendedList.empty();
         if (
             this.fromForm.sender !== undefined &&
             this.toForm.sender !== undefined

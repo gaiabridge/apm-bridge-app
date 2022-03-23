@@ -26,7 +26,7 @@ export default class Form extends DomNode {
         super("form")
         this.append(
             this.chainIcon = el("img", { src: "/images/shared/icn/icn-klaytn.svg", alt: "chain image" }),
-            this.isFrom ? el("p", "FROM") : el("p", "TO"),
+            this.isFrom ? el("p", "FROM\n보내는 체인") : el("p", "TO\n받는체인"),
             this.chainSelect = el("select",
                 el("option", "Klaytn", { value: "8217" }),
                 el("option", "Ethereum", { value: "1" }),
@@ -39,15 +39,12 @@ export default class Form extends DomNode {
                 }
             ),
             (this.balanceDisplay = el("p")),
-            (this.addressDisplay = el("p")),
-            (this.disconnectButton = el("a.disconnect", {
-                click: async () => {
-                    if (this.chainId === 8217) {
-                    }
-                    if (this.chainId === 1) {
-                    }
-                }
-            })),
+            el(".address-container",
+                (this.addressDisplay = el("p")),
+                (this.disconnectButton = el("a.disconnect",
+                    el("img", { src: "/images/shared/icn/icn-disconnect.svg" })
+                )),
+            ),
             (this.buttonContainer = el(".button-container")),
         );
         this.changeChain(chainId);
@@ -68,10 +65,8 @@ export default class Form extends DomNode {
             const address = await KlaytnWallet.loadAddress();
             if (address !== undefined) {
                 this.addressDisplay.empty().appendText(CommonUtil.shortenAddress(address!));
-                this.disconnectButton.empty().appendText("지갑 연결 해제");
             } else {
                 this.addressDisplay.empty();
-                this.disconnectButton.empty();
             }
         } else if (chainId === 1) {
             this.sender = APMReservoirContract;
@@ -80,10 +75,8 @@ export default class Form extends DomNode {
             const address = await EthereumWallet.loadAddress();
             if (address !== undefined) {
                 this.addressDisplay.empty().appendText(CommonUtil.shortenAddress(address!));
-                this.disconnectButton.empty().appendText("지갑 연결 해제");
             } else {
                 this.addressDisplay.empty();
-                this.disconnectButton.empty();
             }
         }
         await this.loadBalance();
@@ -112,6 +105,7 @@ export default class Form extends DomNode {
                     }),
                 );
             } else {
+                this.disconnectButton.empty();
                 this.balanceDisplay.empty().appendText("잔액 불러오기 실패");
                 this.buttonContainer.append(
                     el("a.connect-button", "지갑 연결", {

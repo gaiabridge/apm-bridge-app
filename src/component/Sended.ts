@@ -58,6 +58,7 @@ export default class Sended extends DomNode {
                 ),
                 el("td",
                     received === true ? el("button", "Done") : el("button", "Retry", {
+                        // "disabled": "",
                         click: () => this.retry(),
                     }),
                 ),
