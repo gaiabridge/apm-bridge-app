@@ -1,7 +1,8 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { constants } from "ethers";
 import Klaytn from "../klaytn/Klaytn";
 import KlaytnWallet from "../klaytn/KlaytnWallet";
-import KAPMArtifact from "./abi/artifacts/contracts/KAPM.sol/KAPM.json";
+import KAPMReservoirArtifact from "./abi/artifacts/contracts/KAPMReservoir.sol/KAPMReservoir.json";
 import GaiaBridgeInterface from "./GaiaBridgeInterface";
 import KAPMContract from "./KAPMContract";
 import KlaytnContract from "./KlaytnContract";
@@ -9,7 +10,7 @@ import KlaytnContract from "./KlaytnContract";
 class KAPMReservoirContract extends KlaytnContract implements GaiaBridgeInterface {
 
     constructor() {
-        super("0x14b72d1fa82d131d81fdaea5a9378b65587a13e1", KAPMArtifact.abi);
+        super("0x14b72d1fa82d131d81fdaea5a9378b65587a13e1", KAPMReservoirArtifact.abi);
         KlaytnWallet.toss("connect", this);
         this.watch();
     }
@@ -67,11 +68,11 @@ class KAPMReservoirContract extends KlaytnContract implements GaiaBridgeInterfac
     }
 
     public async sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish) {
-        await this.runWalletMethod("sendToken", toChain, receiver, amount);
+        await this.runWalletMethod("sendToken", toChain, receiver, amount, constants.AddressZero);
     }
 
     public async sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber> {
-        return BigNumber.from(await this.runMethod("sendedAmounts", sender, toChainId, receiver, sendingId));
+        return BigNumber.from((await this.runMethod("sendingData", sender, toChainId, receiver, sendingId))[0]);
     }
 
     public async sendingCounts(sender: string, toChainId: BigNumberish, receiver: string): Promise<BigNumber> {
@@ -83,7 +84,7 @@ class KAPMReservoirContract extends KlaytnContract implements GaiaBridgeInterfac
         rs: string[],
         ss: string[],
     ) {
-        await this.runWalletMethod("receiveToken", sender, fromChain, receiver, amount, sendingId, isFeePayed, vs, rs, ss);
+        await this.runWalletMethod("receiveToken", sender, fromChain, receiver, amount, sendingId, isFeePayed, constants.AddressZero, vs, rs, ss);
     }
 
     public async isTokenReceived(sender: string, fromChain: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<boolean> {

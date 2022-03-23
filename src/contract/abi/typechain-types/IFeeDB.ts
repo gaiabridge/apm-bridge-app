@@ -22,7 +22,7 @@ export interface IFeeDBInterface extends utils.Interface {
     "protocolFee()": FunctionFragment;
     "protocolFeeRecipient()": FunctionFragment;
     "userDiscountRate(address)": FunctionFragment;
-    "userFee(address,uint256)": FunctionFragment;
+    "userFee(address,uint256,address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -43,7 +43,7 @@ export interface IFeeDBInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "userFee",
-    values: [string, BigNumberish]
+    values: [string, BigNumberish, string]
   ): string;
 
   decodeFunctionResult(
@@ -131,6 +131,7 @@ export interface IFeeDB extends BaseContract {
     userFee(
       user: string,
       amount: BigNumberish,
+      nft: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
   };
@@ -146,6 +147,7 @@ export interface IFeeDB extends BaseContract {
   userFee(
     user: string,
     amount: BigNumberish,
+    nft: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -164,6 +166,7 @@ export interface IFeeDB extends BaseContract {
     userFee(
       user: string,
       amount: BigNumberish,
+      nft: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -201,6 +204,7 @@ export interface IFeeDB extends BaseContract {
     userFee(
       user: string,
       amount: BigNumberish,
+      nft: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -224,6 +228,7 @@ export interface IFeeDB extends BaseContract {
     userFee(
       user: string,
       amount: BigNumberish,
+      nft: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

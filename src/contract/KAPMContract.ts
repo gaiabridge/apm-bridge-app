@@ -1,11 +1,11 @@
-import KAPMArtifact from "./abi/artifacts/contracts/KAPM.sol/KAPM.json";
+import KAPMCoinArtifact from "./abi/artifacts/contracts/KAPMCoin.sol/KAPMCoin.json";
 import KIP7Contract from "./klaytn-standard/KIP7Contract";
 
-class KAPMContract extends KIP7Contract {
+class KAPMCoinContract extends KIP7Contract {
 
     constructor() {
-        super("0x1c70233b082b38aabccd4524418a26e81b8378a4", KAPMArtifact.abi);
+        super("0x1c70233b082b38aabccd4524418a26e81b8378a4", KAPMCoinArtifact.abi);
     }
 }
 
-export default new KAPMContract();
+export default new KAPMCoinContract();

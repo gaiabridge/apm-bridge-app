@@ -9,7 +9,7 @@ import GaiaBridgeInterface from "./GaiaBridgeInterface";
 class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeInterface {
 
     constructor() {
-        super("0x7408C2E100FaC5302be554D860899216aCd76951", APMReservoirArtifact.abi, [
+        super("0xa6eb2d8d059804bd7f2ac7579ceaeadabb921eaa", APMReservoirArtifact.abi, [
             "AddSigner",
             "RemoveSigner",
             "SendToken",
@@ -42,13 +42,13 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
                 await APMCoinContract.approve(this.address, constants.MaxUint256);
             } else {
                 const contract = await this.connectAndGetWalletContract();
-                await contract?.sendToken(toChain, receiver, amount);
+                await contract?.sendToken(toChain, receiver, amount, constants.AddressZero);
             }
         }
     }
 
     public async sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber> {
-        return await this.contract.sendedAmounts(sender, toChainId, receiver, sendingId);
+        return (await this.contract.sendingData(sender, toChainId, receiver, sendingId))[0];
     }
 
     public async sendingCounts(sender: string, toChainId: BigNumberish, receiver: string): Promise<BigNumber> {
@@ -61,7 +61,7 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
         ss: string[],
     ) {
         const contract = await this.connectAndGetWalletContract();
-        await contract?.receiveToken(sender, fromChain, receiver, amount, sendingId, isFeePayed, vs, rs, ss);
+        await contract?.receiveToken(sender, fromChain, receiver, amount, sendingId, constants.AddressZero, isFeePayed, vs, rs, ss);
     }
 
     public async isTokenReceived(sender: string, fromChain: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<boolean> {

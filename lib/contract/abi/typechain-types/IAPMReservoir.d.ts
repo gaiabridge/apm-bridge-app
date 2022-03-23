@@ -9,10 +9,10 @@ export interface IAPMReservoirInterface extends utils.Interface {
         "isSigner(address)": FunctionFragment;
         "isTokenReceived(address,uint256,address,uint256)": FunctionFragment;
         "quorum()": FunctionFragment;
-        "receiveToken(address,uint256,address,uint256,uint256,bool,uint8[],bytes32[],bytes32[])": FunctionFragment;
-        "sendToken(uint256,address,uint256)": FunctionFragment;
-        "sendedAmounts(address,uint256,address,uint256)": FunctionFragment;
+        "receiveToken(address,uint256,address,uint256,uint256,bool,address,uint8[],bytes32[],bytes32[])": FunctionFragment;
+        "sendToken(uint256,address,uint256,address)": FunctionFragment;
         "sendingCounts(address,uint256,address)": FunctionFragment;
+        "sendingData(address,uint256,address,uint256)": FunctionFragment;
         "signerIndex(address)": FunctionFragment;
         "signers(uint256)": FunctionFragment;
         "signersLength()": FunctionFragment;
@@ -29,13 +29,14 @@ export interface IAPMReservoirInterface extends utils.Interface {
         BigNumberish,
         BigNumberish,
         boolean,
+        string,
         BigNumberish[],
         BytesLike[],
         BytesLike[]
     ]): string;
-    encodeFunctionData(functionFragment: "sendToken", values: [BigNumberish, string, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "sendedAmounts", values: [string, BigNumberish, string, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "sendToken", values: [BigNumberish, string, BigNumberish, string]): string;
     encodeFunctionData(functionFragment: "sendingCounts", values: [string, BigNumberish, string]): string;
+    encodeFunctionData(functionFragment: "sendingData", values: [string, BigNumberish, string, BigNumberish]): string;
     encodeFunctionData(functionFragment: "signerIndex", values: [string]): string;
     encodeFunctionData(functionFragment: "signers", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "signersLength", values?: undefined): string;
@@ -46,8 +47,8 @@ export interface IAPMReservoirInterface extends utils.Interface {
     decodeFunctionResult(functionFragment: "quorum", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "receiveToken", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "sendToken", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "sendedAmounts", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "sendingCounts", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "sendingData", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "signerIndex", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "signers", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "signersLength", data: BytesLike): Result;
@@ -135,14 +136,20 @@ export interface IAPMReservoir extends BaseContract {
         isSigner(signer: string, overrides?: CallOverrides): Promise<[boolean]>;
         isTokenReceived(sender: string, fromChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
         quorum(overrides?: CallOverrides): Promise<[BigNumber]>;
-        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
+        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, nft: string, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
-        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, overrides?: Overrides & {
+        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, nft: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<ContractTransaction>;
-        sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
         sendingCounts(sender: string, toChainId: BigNumberish, receiver: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+        sendingData(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<[
+            BigNumber,
+            BigNumber
+        ] & {
+            sendedAmount: BigNumber;
+            sendingBlock: BigNumber;
+        }>;
         signerIndex(signer: string, overrides?: CallOverrides): Promise<[BigNumber]>;
         signers(id: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
         signersLength(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -154,14 +161,20 @@ export interface IAPMReservoir extends BaseContract {
     isSigner(signer: string, overrides?: CallOverrides): Promise<boolean>;
     isTokenReceived(sender: string, fromChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
     quorum(overrides?: CallOverrides): Promise<BigNumber>;
-    receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
+    receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, nft: string, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
-    sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, overrides?: Overrides & {
+    sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, nft: string, overrides?: Overrides & {
         from?: string | Promise<string>;
     }): Promise<ContractTransaction>;
-    sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
     sendingCounts(sender: string, toChainId: BigNumberish, receiver: string, overrides?: CallOverrides): Promise<BigNumber>;
+    sendingData(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<[
+        BigNumber,
+        BigNumber
+    ] & {
+        sendedAmount: BigNumber;
+        sendingBlock: BigNumber;
+    }>;
     signerIndex(signer: string, overrides?: CallOverrides): Promise<BigNumber>;
     signers(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
     signersLength(overrides?: CallOverrides): Promise<BigNumber>;
@@ -173,10 +186,16 @@ export interface IAPMReservoir extends BaseContract {
         isSigner(signer: string, overrides?: CallOverrides): Promise<boolean>;
         isTokenReceived(sender: string, fromChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
         quorum(overrides?: CallOverrides): Promise<BigNumber>;
-        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: CallOverrides): Promise<void>;
-        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-        sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, nft: string, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: CallOverrides): Promise<void>;
+        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, nft: string, overrides?: CallOverrides): Promise<BigNumber>;
         sendingCounts(sender: string, toChainId: BigNumberish, receiver: string, overrides?: CallOverrides): Promise<BigNumber>;
+        sendingData(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<[
+            BigNumber,
+            BigNumber
+        ] & {
+            sendedAmount: BigNumber;
+            sendingBlock: BigNumber;
+        }>;
         signerIndex(signer: string, overrides?: CallOverrides): Promise<BigNumber>;
         signers(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
         signersLength(overrides?: CallOverrides): Promise<BigNumber>;
@@ -201,14 +220,14 @@ export interface IAPMReservoir extends BaseContract {
         isSigner(signer: string, overrides?: CallOverrides): Promise<BigNumber>;
         isTokenReceived(sender: string, fromChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         quorum(overrides?: CallOverrides): Promise<BigNumber>;
-        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
+        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, nft: string, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
-        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, overrides?: Overrides & {
+        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, nft: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<BigNumber>;
-        sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         sendingCounts(sender: string, toChainId: BigNumberish, receiver: string, overrides?: CallOverrides): Promise<BigNumber>;
+        sendingData(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         signerIndex(signer: string, overrides?: CallOverrides): Promise<BigNumber>;
         signers(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
         signersLength(overrides?: CallOverrides): Promise<BigNumber>;
@@ -221,14 +240,14 @@ export interface IAPMReservoir extends BaseContract {
         isSigner(signer: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         isTokenReceived(sender: string, fromChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         quorum(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
+        receiveToken(sender: string, fromChainId: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, nft: string, vs: BigNumberish[], rs: BytesLike[], ss: BytesLike[], overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
-        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, overrides?: Overrides & {
+        sendToken(toChainId: BigNumberish, receiver: string, amount: BigNumberish, nft: string, overrides?: Overrides & {
             from?: string | Promise<string>;
         }): Promise<PopulatedTransaction>;
-        sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         sendingCounts(sender: string, toChainId: BigNumberish, receiver: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        sendingData(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         signerIndex(signer: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         signers(id: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
         signersLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;

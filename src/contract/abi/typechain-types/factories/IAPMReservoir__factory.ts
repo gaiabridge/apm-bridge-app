@@ -251,6 +251,11 @@ const _abi = [
         type: "bool",
       },
       {
+        internalType: "address",
+        name: "nft",
+        type: "address",
+      },
+      {
         internalType: "uint8[]",
         name: "vs",
         type: "uint8[]",
@@ -288,6 +293,11 @@ const _abi = [
         name: "amount",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "nft",
+        type: "address",
+      },
     ],
     name: "sendToken",
     outputs: [
@@ -317,13 +327,8 @@ const _abi = [
         name: "receiver",
         type: "address",
       },
-      {
-        internalType: "uint256",
-        name: "sendingId",
-        type: "uint256",
-      },
     ],
-    name: "sendedAmounts",
+    name: "sendingCounts",
     outputs: [
       {
         internalType: "uint256",
@@ -351,12 +356,22 @@ const _abi = [
         name: "receiver",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "sendingId",
+        type: "uint256",
+      },
     ],
-    name: "sendingCounts",
+    name: "sendingData",
     outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "sendedAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "sendingBlock",
         type: "uint256",
       },
     ],
@@ -419,7 +434,7 @@ const _abi = [
     name: "token",
     outputs: [
       {
-        internalType: "contract IERC20",
+        internalType: "address",
         name: "",
         type: "address",
       },

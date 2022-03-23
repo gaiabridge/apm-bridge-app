@@ -109,6 +109,11 @@ const _abi = [
         name: "amount",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "nft",
+        type: "address",
+      },
     ],
     name: "userFee",
     outputs: [

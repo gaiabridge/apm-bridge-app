@@ -9,13 +9,13 @@ export interface IFeeDBInterface extends utils.Interface {
         "protocolFee()": FunctionFragment;
         "protocolFeeRecipient()": FunctionFragment;
         "userDiscountRate(address)": FunctionFragment;
-        "userFee(address,uint256)": FunctionFragment;
+        "userFee(address,uint256,address)": FunctionFragment;
     };
     encodeFunctionData(functionFragment: "paysFeeWhenSending", values?: undefined): string;
     encodeFunctionData(functionFragment: "protocolFee", values?: undefined): string;
     encodeFunctionData(functionFragment: "protocolFeeRecipient", values?: undefined): string;
     encodeFunctionData(functionFragment: "userDiscountRate", values: [string]): string;
-    encodeFunctionData(functionFragment: "userFee", values: [string, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "userFee", values: [string, BigNumberish, string]): string;
     decodeFunctionResult(functionFragment: "paysFeeWhenSending", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "protocolFee", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "protocolFeeRecipient", data: BytesLike): Result;
@@ -62,19 +62,19 @@ export interface IFeeDB extends BaseContract {
         protocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
         protocolFeeRecipient(overrides?: CallOverrides): Promise<[string]>;
         userDiscountRate(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-        userFee(user: string, amount: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+        userFee(user: string, amount: BigNumberish, nft: string, overrides?: CallOverrides): Promise<[BigNumber]>;
     };
     paysFeeWhenSending(overrides?: CallOverrides): Promise<boolean>;
     protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
     protocolFeeRecipient(overrides?: CallOverrides): Promise<string>;
     userDiscountRate(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-    userFee(user: string, amount: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    userFee(user: string, amount: BigNumberish, nft: string, overrides?: CallOverrides): Promise<BigNumber>;
     callStatic: {
         paysFeeWhenSending(overrides?: CallOverrides): Promise<boolean>;
         protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
         protocolFeeRecipient(overrides?: CallOverrides): Promise<string>;
         userDiscountRate(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-        userFee(user: string, amount: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        userFee(user: string, amount: BigNumberish, nft: string, overrides?: CallOverrides): Promise<BigNumber>;
     };
     filters: {
         "UpdateFeeAndRecipient(uint256,address)"(newFee?: null, newRecipient?: null): UpdateFeeAndRecipientEventFilter;
@@ -87,14 +87,14 @@ export interface IFeeDB extends BaseContract {
         protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
         protocolFeeRecipient(overrides?: CallOverrides): Promise<BigNumber>;
         userDiscountRate(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-        userFee(user: string, amount: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+        userFee(user: string, amount: BigNumberish, nft: string, overrides?: CallOverrides): Promise<BigNumber>;
     };
     populateTransaction: {
         paysFeeWhenSending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
         protocolFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
         protocolFeeRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
         userDiscountRate(user: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-        userFee(user: string, amount: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+        userFee(user: string, amount: BigNumberish, nft: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
     };
 }
 //# sourceMappingURL=IFeeDB.d.ts.map

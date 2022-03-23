@@ -1,5 +1,5 @@
 import { DomNode, el } from "@hanul/skynode";
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
 import CommonUtil from "../CommonUtil";
 import APMReservoirContract from "../contract/APMReservoirContract";
 import GaiaBridgeInterface from "../contract/GaiaBridgeInterface";
@@ -92,7 +92,10 @@ export default class Form extends DomNode {
         if (this.sender !== undefined) {
             const owner = await this.sender.loadAddress();
             if (owner !== undefined) {
-
+                const balance = await this.sender.balanceOf(owner);
+                this.balanceDisplay
+                    .empty()
+                    .appendText(`${utils.formatUnits(balance)} APM`);
                 this.buttonContainer.append(
                     el("a.add-token-to-wallet-button", "지갑에 토큰 추가하기", {
                         click: () => {
@@ -128,8 +131,8 @@ export default class Form extends DomNode {
         sender: string,
         toChainId: BigNumber,
         receiver: string,
+        amount: BigNumber,
         sendingId: BigNumber,
-        amount: BigNumber
     ) => {
         this.swaper.receive(sender, toChainId, receiver, sendingId, amount);
         const owner = await this.sender?.loadAddress();

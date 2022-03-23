@@ -26,12 +26,12 @@ export interface APMReservoirInterface extends utils.Interface {
     "isTokenReceived(address,uint256,address,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "quorum()": FunctionFragment;
-    "receiveToken(address,uint256,address,uint256,uint256,bool,uint8[],bytes32[],bytes32[])": FunctionFragment;
+    "receiveToken(address,uint256,address,uint256,uint256,bool,address,uint8[],bytes32[],bytes32[])": FunctionFragment;
     "removeSigner(address,uint8[],bytes32[],bytes32[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "sendToken(uint256,address,uint256)": FunctionFragment;
-    "sendedAmounts(address,uint256,address,uint256)": FunctionFragment;
+    "sendToken(uint256,address,uint256,address)": FunctionFragment;
     "sendingCounts(address,uint256,address)": FunctionFragment;
+    "sendingData(address,uint256,address,uint256)": FunctionFragment;
     "signerIndex(address)": FunctionFragment;
     "signers(uint256)": FunctionFragment;
     "signersLength()": FunctionFragment;
@@ -63,6 +63,7 @@ export interface APMReservoirInterface extends utils.Interface {
       BigNumberish,
       BigNumberish,
       boolean,
+      string,
       BigNumberish[],
       BytesLike[],
       BytesLike[]
@@ -78,15 +79,15 @@ export interface APMReservoirInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "sendToken",
-    values: [BigNumberish, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sendedAmounts",
-    values: [string, BigNumberish, string, BigNumberish]
+    values: [BigNumberish, string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "sendingCounts",
     values: [string, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "sendingData",
+    values: [string, BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "signerIndex", values: [string]): string;
   encodeFunctionData(
@@ -135,11 +136,11 @@ export interface APMReservoirInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "sendToken", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "sendedAmounts",
+    functionFragment: "sendingCounts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "sendingCounts",
+    functionFragment: "sendingData",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -301,6 +302,7 @@ export interface APMReservoir extends BaseContract {
       amount: BigNumberish,
       sendingId: BigNumberish,
       isFeePayed: boolean,
+      nft: string,
       vs: BigNumberish[],
       rs: BytesLike[],
       ss: BytesLike[],
@@ -323,16 +325,9 @@ export interface APMReservoir extends BaseContract {
       toChainId: BigNumberish,
       receiver: string,
       amount: BigNumberish,
+      nft: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    sendedAmounts(
-      arg0: string,
-      arg1: BigNumberish,
-      arg2: string,
-      arg3: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     sendingCounts(
       sender: string,
@@ -340,6 +335,19 @@ export interface APMReservoir extends BaseContract {
       receiver: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    sendingData(
+      arg0: string,
+      arg1: BigNumberish,
+      arg2: string,
+      arg3: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        sendedAmount: BigNumber;
+        sendingBlock: BigNumber;
+      }
+    >;
 
     signerIndex(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -401,6 +409,7 @@ export interface APMReservoir extends BaseContract {
     amount: BigNumberish,
     sendingId: BigNumberish,
     isFeePayed: boolean,
+    nft: string,
     vs: BigNumberish[],
     rs: BytesLike[],
     ss: BytesLike[],
@@ -423,16 +432,9 @@ export interface APMReservoir extends BaseContract {
     toChainId: BigNumberish,
     receiver: string,
     amount: BigNumberish,
+    nft: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  sendedAmounts(
-    arg0: string,
-    arg1: BigNumberish,
-    arg2: string,
-    arg3: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   sendingCounts(
     sender: string,
@@ -440,6 +442,19 @@ export interface APMReservoir extends BaseContract {
     receiver: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  sendingData(
+    arg0: string,
+    arg1: BigNumberish,
+    arg2: string,
+    arg3: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      sendedAmount: BigNumber;
+      sendingBlock: BigNumber;
+    }
+  >;
 
   signerIndex(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -501,6 +516,7 @@ export interface APMReservoir extends BaseContract {
       amount: BigNumberish,
       sendingId: BigNumberish,
       isFeePayed: boolean,
+      nft: string,
       vs: BigNumberish[],
       rs: BytesLike[],
       ss: BytesLike[],
@@ -521,14 +537,7 @@ export interface APMReservoir extends BaseContract {
       toChainId: BigNumberish,
       receiver: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    sendedAmounts(
-      arg0: string,
-      arg1: BigNumberish,
-      arg2: string,
-      arg3: BigNumberish,
+      nft: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -538,6 +547,19 @@ export interface APMReservoir extends BaseContract {
       receiver: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    sendingData(
+      arg0: string,
+      arg1: BigNumberish,
+      arg2: string,
+      arg3: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        sendedAmount: BigNumber;
+        sendingBlock: BigNumber;
+      }
+    >;
 
     signerIndex(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -652,6 +674,7 @@ export interface APMReservoir extends BaseContract {
       amount: BigNumberish,
       sendingId: BigNumberish,
       isFeePayed: boolean,
+      nft: string,
       vs: BigNumberish[],
       rs: BytesLike[],
       ss: BytesLike[],
@@ -674,21 +697,22 @@ export interface APMReservoir extends BaseContract {
       toChainId: BigNumberish,
       receiver: string,
       amount: BigNumberish,
+      nft: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    sendedAmounts(
-      arg0: string,
-      arg1: BigNumberish,
-      arg2: string,
-      arg3: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     sendingCounts(
       sender: string,
       toChainId: BigNumberish,
       receiver: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    sendingData(
+      arg0: string,
+      arg1: BigNumberish,
+      arg2: string,
+      arg3: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -756,6 +780,7 @@ export interface APMReservoir extends BaseContract {
       amount: BigNumberish,
       sendingId: BigNumberish,
       isFeePayed: boolean,
+      nft: string,
       vs: BigNumberish[],
       rs: BytesLike[],
       ss: BytesLike[],
@@ -778,21 +803,22 @@ export interface APMReservoir extends BaseContract {
       toChainId: BigNumberish,
       receiver: string,
       amount: BigNumberish,
+      nft: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    sendedAmounts(
-      arg0: string,
-      arg1: BigNumberish,
-      arg2: string,
-      arg3: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     sendingCounts(
       sender: string,
       toChainId: BigNumberish,
       receiver: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    sendingData(
+      arg0: string,
+      arg1: BigNumberish,
+      arg2: string,
+      arg3: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
