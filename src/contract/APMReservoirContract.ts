@@ -61,7 +61,7 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
         ss: string[],
     ) {
         const contract = await this.connectAndGetWalletContract();
-        await contract?.receiveToken(sender, fromChain, receiver, amount, sendingId, constants.AddressZero, isFeePayed, vs, rs, ss);
+        await contract?.receiveToken(sender, fromChain, receiver, amount, sendingId, isFeePayed, constants.AddressZero, vs, rs, ss);
     }
 
     public async isTokenReceived(sender: string, fromChain: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<boolean> {

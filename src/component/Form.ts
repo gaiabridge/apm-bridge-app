@@ -96,7 +96,7 @@ export default class Form extends DomNode {
                 this.balanceDisplay
                     .empty()
                     .appendText(`${utils.formatUnits(balance)} APM`);
-                this.buttonContainer.append(
+                this.buttonContainer.empty().append(
                     el("a.add-token-to-wallet-button", "지갑에 토큰 추가하기", {
                         click: () => {
                             this.sender?.addTokenToWallet();
@@ -106,7 +106,7 @@ export default class Form extends DomNode {
             } else {
                 this.disconnectButton.empty();
                 this.balanceDisplay.empty().appendText("잔액 불러오기 실패");
-                this.buttonContainer.append(
+                this.buttonContainer.empty().append(
                     el("a.connect-button", "지갑 연결", {
                         click: () => this.sender?.connect(),
                     }),
