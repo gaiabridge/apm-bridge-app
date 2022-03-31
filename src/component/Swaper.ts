@@ -1,15 +1,15 @@
 import { DomNode, el } from "@hanul/skynode";
-import { BigNumber, BigNumberish, utils, constants } from "ethers";
+import { BigNumber, BigNumberish, constants, utils } from "ethers";
 import SkyUtil from "skyutil";
 import superagent from "superagent";
 import APMCoinContract from "../contract/APMCoinContract";
-import APMReservoirContract from "../contract/APMReservoirContract";
 import EthereumWallet from "../ethereum/EthereumWallet";
-import ConfirmingPopup from "./ConfirmingPopup";
+import Store from "../Store";
 import Form from "./Form";
 import Sended from "./Sended";
 
 export default class Swaper extends DomNode {
+
     private fromForm: Form;
     private toForm: Form;
     private amountInput: DomNode<HTMLInputElement>;
@@ -20,21 +20,33 @@ export default class Swaper extends DomNode {
     private balanceDisplay: DomNode;
     private approveButton: DomNode<HTMLButtonElement>;
 
+    private chainIdsStore: Store = new Store("swapper-chain-ids");
+
     constructor() {
         super(".swaper");
+
+        const savedFromChainId = this.chainIdsStore.get<number>("from");
+        const savedToChainId = this.chainIdsStore.get<number>("to");
 
         this.append(
             el("section.swap-container",
                 el(".form-container",
-                    (this.fromForm = new Form(this, 8217, true)),
+                    (this.fromForm = new Form(this, savedFromChainId === undefined ? 8217 : savedFromChainId, true)),
                     el("a", {
                         click: () => {
-                            // TODO: 누를 시 FROM<->TO 변환
+                            const fromChainId = this.fromForm.chainId;
+                            this.fromForm.changeChain(this.toForm.chainId);
+                            this.toForm.changeChain(fromChainId);
+
+                            this.loadHistory();
+
+                            this.chainIdsStore.set("from", this.fromForm.chainId);
+                            this.chainIdsStore.set("to", this.toForm.chainId);
                         }
                     },
                         el("img.arrow", { src: "/images/shared/icn/icn-arrow-right.svg", height: "50", alt: "icn-arrow-right" })
                     ),
-                    (this.toForm = new Form(this, 1))
+                    (this.toForm = new Form(this, savedToChainId === undefined ? 1 : savedToChainId)),
                 ),
                 el(".amount-container",
                     el(".title-container",
@@ -109,7 +121,6 @@ export default class Swaper extends DomNode {
                             el("td", "To Chain"),
                             el("td", "Amount"),
                             el("td", "Fee"),
-                            el("td", "Time"),
                             el("td", "Status"),
                         ),
                     ),
@@ -124,6 +135,9 @@ export default class Swaper extends DomNode {
                 this.toForm.changeChain(originChainId);
             }
             this.loadHistory();
+
+            this.chainIdsStore.set("from", this.fromForm.chainId);
+            this.chainIdsStore.set("to", this.toForm.chainId);
         });
 
         this.toForm.on("changeChain", (chainId: number, originChainId: number) => {
@@ -131,6 +145,9 @@ export default class Swaper extends DomNode {
                 this.fromForm.changeChain(originChainId);
             }
             this.loadHistory();
+
+            this.chainIdsStore.set("from", this.fromForm.chainId);
+            this.chainIdsStore.set("to", this.toForm.chainId);
         });
 
         this.loadHistory();
@@ -158,11 +175,14 @@ export default class Swaper extends DomNode {
     }
 
     private async loadHistory() {
+
         const owner = await this.fromForm.sender!.loadAddress();
         const balance = await this.fromForm.sender!.balanceOf(owner!);
         this.balanceDisplay
             .empty()
             .appendText(`${utils.formatUnits(balance)} APM`);
+
+        this.sendedList.empty();
 
         if (
             this.fromForm.sender !== undefined &&
@@ -209,13 +229,14 @@ export default class Swaper extends DomNode {
                             receiver,
                             sendingId,
                         );
-                        this.receive(
+                        await this.receive(
                             sender,
                             this.toForm.chainId,
                             receiver,
                             sendingId,
                             sended,
                         );
+                        this.loadHistory();
                     }
                 }
             ).appendTo(this.sendedList, 0);
@@ -267,15 +288,7 @@ export default class Swaper extends DomNode {
                         result2.body.confirming === true ||
                         result3.body.confirming === true
                     ) {
-                        new ConfirmingPopup(() => {
-                            this.receive(
-                                sender,
-                                toChainId,
-                                _receiver,
-                                sendingId,
-                                amount
-                            );
-                        });
+                        alert("이더리움 Block Confirm을 기다리는 중입니다.");
                     }
 
                     else {

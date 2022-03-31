@@ -75,6 +75,10 @@ class KAPMReservoirContract extends KlaytnContract implements GaiaBridgeInterfac
         return BigNumber.from((await this.runMethod("sendingData", sender, toChainId, receiver, sendingId))[0]);
     }
 
+    public async sendingBlock(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber> {
+        return BigNumber.from((await this.runMethod("sendingData", sender, toChainId, receiver, sendingId))[1]);
+    }
+
     public async sendingCounts(sender: string, toChainId: BigNumberish, receiver: string): Promise<BigNumber> {
         return BigNumber.from(await this.runMethod("sendingCounts", sender, toChainId, receiver));
     }

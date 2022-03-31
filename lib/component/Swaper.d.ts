@@ -9,6 +9,7 @@ export default class Swaper extends DomNode {
     private receivedDisplay;
     private balanceDisplay;
     private approveButton;
+    private chainIdsStore;
     constructor();
     private loadHistoryNonce;
     numberWithCommas(x: string, fixed?: number): string;

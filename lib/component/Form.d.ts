@@ -10,7 +10,6 @@ export default class Form extends DomNode {
     private chainSelect;
     private balanceDisplay;
     private addressDisplay;
-    private disconnectButton;
     private buttonContainer;
     constructor(swaper: Swaper, chainId: number, isFrom?: boolean);
     changeChain(chainId: number): Promise<void>;

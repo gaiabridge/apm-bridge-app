@@ -1,6 +1,8 @@
 import { DomNode, el } from "@hanul/skynode";
 import { BigNumber, utils } from "ethers";
+import APMReservoirContract from "../contract/APMReservoirContract";
 import GaiaBridgeInterface from "../contract/GaiaBridgeInterface";
+import EthereumNetworkProvider from "../ethereum/EthereumNetworkProvider";
 
 export default class Sended extends DomNode {
 
@@ -33,19 +35,24 @@ export default class Sended extends DomNode {
         const sended = await this.fromSender.sendedAmounts(this.sender, this.toChainId, this.receiver, this.sendingId);
         const received = await this.toSender.isTokenReceived(this.sender, this.fromChainId, this.receiver, this.sendingId);
 
+        let recieveButton: DomNode | undefined;
+
         this.empty().append(
             el("tr",
                 el("td",
                     el(".chain-container",
-                        this.fromImage = el("img", { src: "/images/shared/icn/icn-ethereum.svg", alt: "icn-ethereum" }),
-                        this.fromChainText = el("p", `${console.log(this.fromSender)}`),
+                        this.fromImage = el("img", {
+                            src: this.fromChainId === 1 ? "/images/shared/icn/icn-ethereum.svg" : "/images/shared/icn/icn-klaytn.svg",
+                        }),
+                        this.fromChainText = el("p", this.fromChainId === 1 ? "Ethereum" : "Klaytn"),
                     ),
-
                 ),
                 el("td",
                     el(".chain-container",
-                        this.toImage = el("img", { src: "/images/shared/icn/icn-klaytn.svg", alt: "icn-klaytn" }),
-                        this.toChainText = el("p", "Klaytn"),
+                        this.toImage = el("img", {
+                            src: this.toChainId === 1 ? "/images/shared/icn/icn-ethereum.svg" : "/images/shared/icn/icn-klaytn.svg",
+                        }),
+                        this.toChainText = el("p", this.toChainId === 1 ? "Ethereum" : "Klaytn"),
                     ),
                 ),
                 el("td",
@@ -55,16 +62,39 @@ export default class Sended extends DomNode {
                     el("p", `${Number(await this.getFormatting(sended)) * 0.3 / 100} APM`),
                 ),
                 el("td",
-                    el("p", "00:00"),
-                ),
-                el("td",
-                    received === true ? el("button", "Done") : el("button", "Retry", {
-                        // "disabled": "",
+                    received === true ? el("p", "Done") : recieveButton = el("button", "...", {
                         click: () => this.retry(),
                     }),
                 ),
             ),
         );
+
+        if (recieveButton !== undefined) {
+            if (this.fromChainId === 1) {
+                const interval = setInterval(async () => {
+                    if (recieveButton?.deleted === true) {
+                        clearInterval(interval);
+                    } else {
+                        const sendingBlock = await APMReservoirContract.sendingBlock(
+                            this.sender,
+                            this.toChainId,
+                            this.receiver,
+                            this.sendingId,
+                        );
+                        const currentBlock = await EthereumNetworkProvider.getBlockNumber();
+                        const remainBlocks = currentBlock - sendingBlock.toNumber();
+                        if (remainBlocks < 32) {
+                            recieveButton?.empty().appendText(`${remainBlocks} / 32`);
+                        } else {
+                            recieveButton?.empty().appendText("Recieve");
+                        }
+                    }
+                }, 1000);
+            } else {
+                recieveButton?.empty().appendText("Recieve");
+            }
+        }
+
         this.loadChain();
     }
 

@@ -15,7 +15,7 @@ export default class Form extends DomNode {
     private chainSelect: DomNode<HTMLSelectElement>;
     private balanceDisplay: DomNode;
     private addressDisplay: DomNode;
-    private disconnectButton: DomNode;
+    //private disconnectButton: DomNode;
     private buttonContainer: DomNode;
 
     constructor(
@@ -41,9 +41,18 @@ export default class Form extends DomNode {
             (this.balanceDisplay = el("p")),
             el(".address-container",
                 (this.addressDisplay = el("p")),
-                (this.disconnectButton = el("a.disconnect",
-                    el("img", { src: "/images/shared/icn/icn-disconnect.svg" })
-                )),
+                /*(this.disconnectButton = el("a.disconnect",
+                    el("img", { src: "/images/shared/icn/icn-disconnect.svg" }),
+                    {
+                        click: () => {
+                            if (this.chainId === 8217) {
+                                
+                            } else if (this.chainId === 1) {
+                                EthereumWallet.disconnect();
+                            }
+                        },
+                    },
+                )),*/
             ),
             (this.buttonContainer = el(".button-container")),
         );
@@ -104,7 +113,6 @@ export default class Form extends DomNode {
                     }),
                 );
             } else {
-                this.disconnectButton.empty();
                 this.balanceDisplay.empty().appendText("잔액 불러오기 실패");
                 this.buttonContainer.empty().append(
                     el("a.connect-button", "지갑 연결", {
@@ -134,7 +142,9 @@ export default class Form extends DomNode {
         amount: BigNumber,
         sendingId: BigNumber,
     ) => {
-        this.swaper.receive(sender, toChainId, receiver, sendingId, amount);
+        if (this.chainId !== 1) {
+            this.swaper.receive(sender, toChainId, receiver, sendingId, amount);
+        }
         const owner = await this.sender?.loadAddress();
         if (sender === owner) {
             this.swaper.addSended(sender, receiver, sendingId);

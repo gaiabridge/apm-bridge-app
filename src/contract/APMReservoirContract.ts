@@ -51,6 +51,10 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
         return (await this.contract.sendingData(sender, toChainId, receiver, sendingId))[0];
     }
 
+    public async sendingBlock(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber> {
+        return (await this.contract.sendingData(sender, toChainId, receiver, sendingId))[1];
+    }
+
     public async sendingCounts(sender: string, toChainId: BigNumberish, receiver: string): Promise<BigNumber> {
         return await this.contract.sendingCounts(sender, toChainId, receiver);
     }

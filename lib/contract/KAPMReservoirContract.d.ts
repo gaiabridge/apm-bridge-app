@@ -12,6 +12,7 @@ declare class KAPMReservoirContract extends KlaytnContract implements GaiaBridge
     addTokenToWallet(): void;
     sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish): Promise<void>;
     sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber>;
+    sendingBlock(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber>;
     sendingCounts(sender: string, toChainId: BigNumberish, receiver: string): Promise<BigNumber>;
     receiveToken(sender: string, fromChain: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean, vs: number[], rs: string[], ss: string[]): Promise<void>;
     isTokenReceived(sender: string, fromChain: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<boolean>;
