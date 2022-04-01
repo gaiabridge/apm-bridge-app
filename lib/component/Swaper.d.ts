@@ -9,6 +9,7 @@ export default class Swaper extends DomNode {
     private receivedDisplay;
     private balanceDisplay;
     private approveButton;
+    private transferButton;
     private chainIdsStore;
     constructor();
     private loadHistoryNonce;

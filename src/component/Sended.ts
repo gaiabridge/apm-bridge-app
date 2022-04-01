@@ -89,7 +89,7 @@ export default class Sended extends DomNode {
                             recieveButton?.empty().appendText("Recieve");
                         }
                     }
-                }, 1000);
+                }, 15000);
             } else {
                 recieveButton?.empty().appendText("Recieve");
             }

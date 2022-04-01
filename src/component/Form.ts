@@ -142,7 +142,9 @@ export default class Form extends DomNode {
         amount: BigNumber,
         sendingId: BigNumber,
     ) => {
-        if (this.chainId !== 1) {
+        if (this.chainId === 1) {
+            // TODO: 메시지 등
+        } else {
             this.swaper.receive(sender, toChainId, receiver, sendingId, amount);
         }
         const owner = await this.sender?.loadAddress();

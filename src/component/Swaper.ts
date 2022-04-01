@@ -3,7 +3,11 @@ import { BigNumber, BigNumberish, constants, utils } from "ethers";
 import SkyUtil from "skyutil";
 import superagent from "superagent";
 import APMCoinContract from "../contract/APMCoinContract";
+import APMReservoirContract from "../contract/APMReservoirContract";
+import KAPMContract from "../contract/KAPMContract";
+import KAPMReservoirContract from "../contract/KAPMReservoirContract";
 import EthereumWallet from "../ethereum/EthereumWallet";
+import KlaytnWallet from "../klaytn/KlaytnWallet";
 import Store from "../Store";
 import Form from "./Form";
 import Sended from "./Sended";
@@ -18,7 +22,9 @@ export default class Swaper extends DomNode {
     private feeDisplay: DomNode;
     private receivedDisplay: DomNode;
     private balanceDisplay: DomNode;
+
     private approveButton: DomNode<HTMLButtonElement>;
+    private transferButton: DomNode<HTMLButtonElement>;
 
     private chainIdsStore: Store = new Store("swapper-chain-ids");
 
@@ -37,6 +43,7 @@ export default class Swaper extends DomNode {
                             const fromChainId = this.fromForm.chainId;
                             this.fromForm.changeChain(this.toForm.chainId);
                             this.toForm.changeChain(fromChainId);
+                            this.getApprove(fromChainId);
 
                             this.loadHistory();
 
@@ -100,10 +107,16 @@ export default class Swaper extends DomNode {
                         this.approveButton = el("button", "Approve\n토큰 사용 허가", {
                             "disabled": "",
                             click: async () => {
-                                await APMCoinContract.approve("0x7408C2E100FaC5302be554D860899216aCd76951", constants.MaxUint256);
+                                const fromChainId = this.fromForm.chainId;
+                                if (fromChainId === 1) {
+                                    await APMCoinContract.approve(APMReservoirContract.address, constants.MaxUint256);
+                                } else if (fromChainId === 8217) {
+                                    await KAPMContract.approve(KAPMReservoirContract.address, constants.MaxUint256);
+                                }
+                                this.getApprove(fromChainId);
                             }
                         }),
-                        el("button", "Transfer\n전송하기", {
+                        this.transferButton = el("button", "Transfer\n전송하기", {
                             click: () => this.send(
                                 utils.parseEther(this.amountInput.domElement.value)
                             ),
@@ -128,12 +141,16 @@ export default class Swaper extends DomNode {
             ),
         );
 
-        this.getApprove(1);
+        if (savedFromChainId !== undefined) {
+            this.getApprove(savedFromChainId);
+        }
 
         this.fromForm.on("changeChain", (chainId: number, originChainId: number) => {
             if (this.toForm.chainId === chainId) {
                 this.toForm.changeChain(originChainId);
             }
+
+            this.getApprove(chainId);
             this.loadHistory();
 
             this.chainIdsStore.set("from", this.fromForm.chainId);
@@ -163,15 +180,30 @@ export default class Swaper extends DomNode {
         return parts.join(".");
     }
 
-    private async getApprove(amount: BigNumberish) {
-        const owner = await EthereumWallet.loadAddress();
-
-        if ((await APMCoinContract.allowance(owner!, "0x7408C2E100FaC5302be554D860899216aCd76951")).lt(amount)) {
-            this.approveButton.domElement.disabled = false;
-        } else {
-            this.approveButton.domElement.disabled = true;
+    private async getApprove(chainId: number) {
+        if (chainId === 1) {
+            const owner = await EthereumWallet.loadAddress();
+            if (owner !== undefined) {
+                if ((await APMCoinContract.allowance(owner, APMReservoirContract.address)).lt(1)) {
+                    this.approveButton.domElement.disabled = false;
+                    this.transferButton.domElement.disabled = true;
+                } else {
+                    this.approveButton.domElement.disabled = true;
+                    this.transferButton.domElement.disabled = false;
+                }
+            }
+        } else if (chainId === 8217) {
+            const owner = await KlaytnWallet.loadAddress();
+            if (owner !== undefined) {
+                if ((await KAPMContract.allowance(owner, KAPMReservoirContract.address)).lt(1)) {
+                    this.approveButton.domElement.disabled = false;
+                    this.transferButton.domElement.disabled = true;
+                } else {
+                    this.approveButton.domElement.disabled = true;
+                    this.transferButton.domElement.disabled = false;
+                }
+            }
         }
-
     }
 
     private async loadHistory() {
@@ -293,7 +325,7 @@ export default class Swaper extends DomNode {
 
                     else {
 
-                        let isFeePayed = this.fromForm.chainId === 8172;
+                        let isFeePayed = this.fromForm.chainId === 8217;
 
                         const vs: number[] = [];
                         const rs: string[] = [];
