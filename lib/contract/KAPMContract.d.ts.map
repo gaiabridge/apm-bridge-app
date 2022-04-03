@@ -1,1 +1,1 @@
-{"version":3,"file":"KAPMContract.d.ts","sourceRoot":"","sources":["../../src/contract/KAPMContract.ts"],"names":[],"mappings":"AACA,OAAO,YAAY,MAAM,gCAAgC,CAAC;AAE1D,cAAM,gBAAiB,SAAQ,YAAY;;CAK1C;;AAED,wBAAsC"}
+{"version":3,"file":"KAPMContract.d.ts","sourceRoot":"","sources":["../../src/contract/KAPMContract.ts"],"names":[],"mappings":"AAGA,OAAO,YAAY,MAAM,gCAAgC,CAAC;AAE1D,cAAM,gBAAiB,SAAQ,YAAY;;YAOzB,KAAK;CAetB;;AAED,wBAAsC"}

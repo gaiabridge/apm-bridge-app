@@ -9,13 +9,14 @@ import GaiaBridgeInterface from "./GaiaBridgeInterface";
 class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeInterface {
 
     constructor() {
-        super("0xa6eb2d8d059804bd7f2ac7579ceaeadabb921eaa", APMReservoirArtifact.abi, [
+        super("0x488dE692cBB3Ce5f73B9AEbe5D98B45A1cEBfA0e", APMReservoirArtifact.abi, [
             "AddSigner",
             "RemoveSigner",
             "SendToken",
             "ReceiveToken",
         ]);
         APMCoinContract.toss("Transfer", this);
+        APMCoinContract.toss("Approval", this);
         EthereumWallet.toss("connect", this);
     }
 
@@ -35,37 +36,55 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
         EthereumWallet.addToken(APMCoinContract.address, "APM", 18, "https://apm-test.gaiabridge.com/images/shared/icn/icn-apmcoin.png");
     }
 
-    public async sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish) {
+    public async sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish, data: string) {
         const owner = await EthereumWallet.loadAddress();
         if (owner !== undefined) {
             if ((await APMCoinContract.allowance(owner, this.address)).lt(amount)) {
                 await APMCoinContract.approve(this.address, constants.MaxUint256);
             } else {
                 const contract = await this.connectAndGetWalletContract();
-                await contract?.sendToken(toChain, receiver, amount, constants.AddressZero);
+                await contract?.sendToken(toChain, receiver, amount, data);
             }
         }
     }
 
-    public async sendedAmounts(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber> {
-        return (await this.contract.sendingData(sender, toChainId, receiver, sendingId))[0];
-    }
-
-    public async sendingBlock(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<BigNumber> {
-        return (await this.contract.sendingData(sender, toChainId, receiver, sendingId))[1];
+    public async sendingData(sender: string, toChainId: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<{
+        amount: BigNumber,
+        atBlock: BigNumber,
+        isFeePayed: boolean,
+        protocolFee: BigNumber,
+        senderDiscountRate: BigNumber,
+    }> {
+        const result = await this.contract.sendingData(sender, toChainId, receiver, sendingId);
+        return {
+            amount: BigNumber.from(result[0]),
+            atBlock: BigNumber.from(result[1]),
+            isFeePayed: result[2],
+            protocolFee: BigNumber.from(result[3]),
+            senderDiscountRate: BigNumber.from(result[4]),
+        };
     }
 
     public async sendingCounts(sender: string, toChainId: BigNumberish, receiver: string): Promise<BigNumber> {
         return await this.contract.sendingCounts(sender, toChainId, receiver);
     }
 
-    public async receiveToken(sender: string, fromChain: BigNumberish, receiver: string, amount: BigNumberish, sendingId: BigNumberish, isFeePayed: boolean,
+    public async receiveToken(
+        sender: string,
+        fromChainId: BigNumberish,
+        receiver: string,
+        amount: BigNumberish,
+        sendingId: BigNumberish,
+        isFeePayed: boolean,
+        protocolFee: BigNumberish,
+        senderDiscountRate: BigNumberish,
+        data: string,
         vs: number[],
         rs: string[],
         ss: string[],
-    ) {
+    ): Promise<void> {
         const contract = await this.connectAndGetWalletContract();
-        await contract?.receiveToken(sender, fromChain, receiver, amount, sendingId, isFeePayed, constants.AddressZero, vs, rs, ss);
+        await contract?.receiveToken(sender, fromChainId, receiver, amount, sendingId, isFeePayed, protocolFee, senderDiscountRate, data, vs, rs, ss);
     }
 
     public async isTokenReceived(sender: string, fromChain: BigNumberish, receiver: string, sendingId: BigNumberish): Promise<boolean> {

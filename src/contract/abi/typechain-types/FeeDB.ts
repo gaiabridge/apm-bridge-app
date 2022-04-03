@@ -20,28 +20,41 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface FeeDBInterface extends utils.Interface {
   contractName: "FeeDB";
   functions: {
-    "updateNFTDiscount(address[],bool[],uint256[])": FunctionFragment;
-    "togglePaysFeeWhenSending()": FunctionFragment;
+    "getFeeDataForReceive(address,bytes)": FunctionFragment;
+    "getFeeDataForSend(address,bytes)": FunctionFragment;
+    "nftDiscountRate(address)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "paysFeeWhenSending()": FunctionFragment;
+    "protocolFee()": FunctionFragment;
     "protocolFeeRecipient()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "paysFeeWhenSending()": FunctionFragment;
-    "userDiscountRate(address)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "isOwner()": FunctionFragment;
-    "protocolFee()": FunctionFragment;
-    "nftDiscount(address)": FunctionFragment;
-    "setDiscountRate(address[],uint256[])": FunctionFragment;
-    "userFee(address,uint256,address)": FunctionFragment;
+    "togglePaysFeeWhenSending()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "updateFeeAndRecipient(uint256,address)": FunctionFragment;
+    "updateNFTDiscountRate(address[],uint256[])": FunctionFragment;
+    "updateUserDiscountRate(address[],uint256[])": FunctionFragment;
+    "userDiscountRate(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "updateNFTDiscount",
-    values: [string[], boolean[], BigNumberish[]]
+    functionFragment: "getFeeDataForReceive",
+    values: [string, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "togglePaysFeeWhenSending",
+    functionFragment: "getFeeDataForSend",
+    values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "nftDiscountRate",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "paysFeeWhenSending",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "protocolFee",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -53,27 +66,8 @@ export interface FeeDBInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "paysFeeWhenSending",
+    functionFragment: "togglePaysFeeWhenSending",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "userDiscountRate",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isOwner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "protocolFee",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "nftDiscount", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "setDiscountRate",
-    values: [string[], BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "userFee",
-    values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -83,13 +77,38 @@ export interface FeeDBInterface extends utils.Interface {
     functionFragment: "updateFeeAndRecipient",
     values: [BigNumberish, string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateNFTDiscountRate",
+    values: [string[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateUserDiscountRate",
+    values: [string[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "userDiscountRate",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(
-    functionFragment: "updateNFTDiscount",
+    functionFragment: "getFeeDataForReceive",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "togglePaysFeeWhenSending",
+    functionFragment: "getFeeDataForSend",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "nftDiscountRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "paysFeeWhenSending",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "protocolFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -101,28 +120,9 @@ export interface FeeDBInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "paysFeeWhenSending",
+    functionFragment: "togglePaysFeeWhenSending",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "userDiscountRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isOwner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "protocolFee",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "nftDiscount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setDiscountRate",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "userFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -131,17 +131,41 @@ export interface FeeDBInterface extends utils.Interface {
     functionFragment: "updateFeeAndRecipient",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateNFTDiscountRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateUserDiscountRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "userDiscountRate",
+    data: BytesLike
+  ): Result;
 
   events: {
-    "UpdateFeeAndRecipient(uint256,address)": EventFragment;
-    "UpdatePaysFeeWhenSending(bool)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "UpdateFeeAndRecipient(uint256,address)": EventFragment;
+    "UpdateNFTDiscountRate(address,uint256)": EventFragment;
+    "UpdatePaysFeeWhenSending(bool)": EventFragment;
+    "UpdateUserDiscountRate(address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "UpdateFeeAndRecipient"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdatePaysFeeWhenSending"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateFeeAndRecipient"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateNFTDiscountRate"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdatePaysFeeWhenSending"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateUserDiscountRate"): EventFragment;
 }
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export type UpdateFeeAndRecipientEvent = TypedEvent<
   [BigNumber, string],
@@ -151,6 +175,14 @@ export type UpdateFeeAndRecipientEvent = TypedEvent<
 export type UpdateFeeAndRecipientEventFilter =
   TypedEventFilter<UpdateFeeAndRecipientEvent>;
 
+export type UpdateNFTDiscountRateEvent = TypedEvent<
+  [string, BigNumber],
+  { nft: string; discountRate: BigNumber }
+>;
+
+export type UpdateNFTDiscountRateEventFilter =
+  TypedEventFilter<UpdateNFTDiscountRateEvent>;
+
 export type UpdatePaysFeeWhenSendingEvent = TypedEvent<
   [boolean],
   { newType: boolean }
@@ -159,13 +191,13 @@ export type UpdatePaysFeeWhenSendingEvent = TypedEvent<
 export type UpdatePaysFeeWhenSendingEventFilter =
   TypedEventFilter<UpdatePaysFeeWhenSendingEvent>;
 
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  { previousOwner: string; newOwner: string }
+export type UpdateUserDiscountRateEvent = TypedEvent<
+  [string, BigNumber],
+  { user: string; discountRate: BigNumber }
 >;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
+export type UpdateUserDiscountRateEventFilter =
+  TypedEventFilter<UpdateUserDiscountRateEvent>;
 
 export interface FeeDB extends BaseContract {
   contractName: "FeeDB";
@@ -195,16 +227,37 @@ export interface FeeDB extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    updateNFTDiscount(
-      nfts: string[],
-      status: boolean[],
-      discountRates: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    getFeeDataForReceive(
+      user: string,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { _recipient: string; _discountRate: BigNumber }
+    >;
 
-    togglePaysFeeWhenSending(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    getFeeDataForSend(
+      user: string,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, BigNumber, BigNumber] & {
+        _paysFeeWhenSending: boolean;
+        _recipient: string;
+        _protocolFee: BigNumber;
+        _discountRate: BigNumber;
+      }
+    >;
+
+    nftDiscountRate(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    paysFeeWhenSending(overrides?: CallOverrides): Promise<[boolean]>;
+
+    protocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     protocolFeeRecipient(overrides?: CallOverrides): Promise<[string]>;
 
@@ -212,38 +265,9 @@ export interface FeeDB extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    paysFeeWhenSending(overrides?: CallOverrides): Promise<[boolean]>;
-
-    userDiscountRate(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    isOwner(overrides?: CallOverrides): Promise<[boolean]>;
-
-    protocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    nftDiscount(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [boolean, BigNumber] & { status: boolean; discountRate: BigNumber }
-    >;
-
-    setDiscountRate(
-      users: string[],
-      discountRates: BigNumberish[],
+    togglePaysFeeWhenSending(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    userFee(
-      user: string,
-      amount: BigNumberish,
-      nft: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     transferOwnership(
       newOwner: string,
@@ -255,18 +279,53 @@ export interface FeeDB extends BaseContract {
       newRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    updateNFTDiscountRate(
+      nfts: string[],
+      discountRates: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateUserDiscountRate(
+      users: string[],
+      discountRates: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    userDiscountRate(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
-  updateNFTDiscount(
-    nfts: string[],
-    status: boolean[],
-    discountRates: BigNumberish[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  getFeeDataForReceive(
+    user: string,
+    data: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber] & { _recipient: string; _discountRate: BigNumber }
+  >;
 
-  togglePaysFeeWhenSending(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  getFeeDataForSend(
+    user: string,
+    data: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<
+    [boolean, string, BigNumber, BigNumber] & {
+      _paysFeeWhenSending: boolean;
+      _recipient: string;
+      _protocolFee: BigNumber;
+      _discountRate: BigNumber;
+    }
+  >;
+
+  nftDiscountRate(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  paysFeeWhenSending(overrides?: CallOverrides): Promise<boolean>;
+
+  protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
   protocolFeeRecipient(overrides?: CallOverrides): Promise<string>;
 
@@ -274,35 +333,9 @@ export interface FeeDB extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  paysFeeWhenSending(overrides?: CallOverrides): Promise<boolean>;
-
-  userDiscountRate(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  isOwner(overrides?: CallOverrides): Promise<boolean>;
-
-  protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-  nftDiscount(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<
-    [boolean, BigNumber] & { status: boolean; discountRate: BigNumber }
-  >;
-
-  setDiscountRate(
-    users: string[],
-    discountRates: BigNumberish[],
+  togglePaysFeeWhenSending(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  userFee(
-    user: string,
-    amount: BigNumberish,
-    nft: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: string,
@@ -315,52 +348,58 @@ export interface FeeDB extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateNFTDiscountRate(
+    nfts: string[],
+    discountRates: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateUserDiscountRate(
+    users: string[],
+    discountRates: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  userDiscountRate(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
-    updateNFTDiscount(
-      nfts: string[],
-      status: boolean[],
-      discountRates: BigNumberish[],
+    getFeeDataForReceive(
+      user: string,
+      data: BytesLike,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      [string, BigNumber] & { _recipient: string; _discountRate: BigNumber }
+    >;
 
-    togglePaysFeeWhenSending(overrides?: CallOverrides): Promise<void>;
+    getFeeDataForSend(
+      user: string,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, BigNumber, BigNumber] & {
+        _paysFeeWhenSending: boolean;
+        _recipient: string;
+        _protocolFee: BigNumber;
+        _discountRate: BigNumber;
+      }
+    >;
 
-    protocolFeeRecipient(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    paysFeeWhenSending(overrides?: CallOverrides): Promise<boolean>;
-
-    userDiscountRate(
+    nftDiscountRate(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    isOwner(overrides?: CallOverrides): Promise<boolean>;
+    paysFeeWhenSending(overrides?: CallOverrides): Promise<boolean>;
 
     protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-    nftDiscount(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [boolean, BigNumber] & { status: boolean; discountRate: BigNumber }
-    >;
+    protocolFeeRecipient(overrides?: CallOverrides): Promise<string>;
 
-    setDiscountRate(
-      users: string[],
-      discountRates: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    userFee(
-      user: string,
-      amount: BigNumberish,
-      nft: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    togglePaysFeeWhenSending(overrides?: CallOverrides): Promise<void>;
 
     transferOwnership(
       newOwner: string,
@@ -372,9 +411,35 @@ export interface FeeDB extends BaseContract {
       newRecipient: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateNFTDiscountRate(
+      nfts: string[],
+      discountRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateUserDiscountRate(
+      users: string[],
+      discountRates: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    userDiscountRate(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+
     "UpdateFeeAndRecipient(uint256,address)"(
       newFee?: null,
       newRecipient?: null
@@ -384,6 +449,15 @@ export interface FeeDB extends BaseContract {
       newRecipient?: null
     ): UpdateFeeAndRecipientEventFilter;
 
+    "UpdateNFTDiscountRate(address,uint256)"(
+      nft?: null,
+      discountRate?: null
+    ): UpdateNFTDiscountRateEventFilter;
+    UpdateNFTDiscountRate(
+      nft?: null,
+      discountRate?: null
+    ): UpdateNFTDiscountRateEventFilter;
+
     "UpdatePaysFeeWhenSending(bool)"(
       newType?: null
     ): UpdatePaysFeeWhenSendingEventFilter;
@@ -391,27 +465,39 @@ export interface FeeDB extends BaseContract {
       newType?: null
     ): UpdatePaysFeeWhenSendingEventFilter;
 
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
+    "UpdateUserDiscountRate(address,uint256)"(
+      user?: null,
+      discountRate?: null
+    ): UpdateUserDiscountRateEventFilter;
+    UpdateUserDiscountRate(
+      user?: null,
+      discountRate?: null
+    ): UpdateUserDiscountRateEventFilter;
   };
 
   estimateGas: {
-    updateNFTDiscount(
-      nfts: string[],
-      status: boolean[],
-      discountRates: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+    getFeeDataForReceive(
+      user: string,
+      data: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    togglePaysFeeWhenSending(
-      overrides?: Overrides & { from?: string | Promise<string> }
+    getFeeDataForSend(
+      user: string,
+      data: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    nftDiscountRate(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    paysFeeWhenSending(overrides?: CallOverrides): Promise<BigNumber>;
+
+    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     protocolFeeRecipient(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -419,32 +505,8 @@ export interface FeeDB extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    paysFeeWhenSending(overrides?: CallOverrides): Promise<BigNumber>;
-
-    userDiscountRate(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isOwner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    nftDiscount(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    setDiscountRate(
-      users: string[],
-      discountRates: BigNumberish[],
+    togglePaysFeeWhenSending(
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    userFee(
-      user: string,
-      amount: BigNumberish,
-      nft: string,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     transferOwnership(
@@ -457,19 +519,50 @@ export interface FeeDB extends BaseContract {
       newRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    updateNFTDiscountRate(
+      nfts: string[],
+      discountRates: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateUserDiscountRate(
+      users: string[],
+      discountRates: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    userDiscountRate(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    updateNFTDiscount(
-      nfts: string[],
-      status: boolean[],
-      discountRates: BigNumberish[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+    getFeeDataForReceive(
+      user: string,
+      data: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    togglePaysFeeWhenSending(
-      overrides?: Overrides & { from?: string | Promise<string> }
+    getFeeDataForSend(
+      user: string,
+      data: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    nftDiscountRate(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    paysFeeWhenSending(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    protocolFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     protocolFeeRecipient(
       overrides?: CallOverrides
@@ -479,37 +572,8 @@ export interface FeeDB extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    paysFeeWhenSending(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    userDiscountRate(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isOwner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    protocolFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    nftDiscount(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setDiscountRate(
-      users: string[],
-      discountRates: BigNumberish[],
+    togglePaysFeeWhenSending(
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    userFee(
-      user: string,
-      amount: BigNumberish,
-      nft: string,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
@@ -521,6 +585,23 @@ export interface FeeDB extends BaseContract {
       newFee: BigNumberish,
       newRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateNFTDiscountRate(
+      nfts: string[],
+      discountRates: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateUserDiscountRate(
+      users: string[],
+      discountRates: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    userDiscountRate(
+      arg0: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

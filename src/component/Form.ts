@@ -66,6 +66,7 @@ export default class Form extends DomNode {
         this.sender?.off("connect", this.connectHandler);
         this.sender?.off("Transfer", this.transferHandler);
         this.sender?.off("SendToken", this.sendHandler);
+        this.sender?.off("Approval", this.approvalHandler);
 
         if (chainId === 8217) {
             this.sender = KAPMReservoirContract;
@@ -93,6 +94,7 @@ export default class Form extends DomNode {
         this.sender?.on("connect", this.connectHandler);
         this.sender?.on("Transfer", this.transferHandler);
         this.sender?.on("SendToken", this.sendHandler);
+        this.sender?.on("Approval", this.approvalHandler);
     }
 
     private async loadBalance() {
@@ -135,6 +137,13 @@ export default class Form extends DomNode {
         }
     };
 
+    private approvalHandler = async (from: string, to: string) => {
+        const owner = await this.sender?.loadAddress();
+        if (from === owner && to === this.sender?.address) {
+            this.fireEvent("approved");
+        }
+    };
+
     private sendHandler = async (
         sender: string,
         toChainId: BigNumber,
@@ -157,6 +166,7 @@ export default class Form extends DomNode {
         this.sender?.off("connect", this.connectHandler);
         this.sender?.off("Transfer", this.transferHandler);
         this.sender?.off("SendToken", this.sendHandler);
+        this.sender?.off("Approval", this.approvalHandler);
         super.delete();
     }
 }

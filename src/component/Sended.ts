@@ -32,7 +32,7 @@ export default class Sended extends DomNode {
     }
 
     private async load() {
-        const sended = await this.fromSender.sendedAmounts(this.sender, this.toChainId, this.receiver, this.sendingId);
+        const sendingData = await this.fromSender.sendingData(this.sender, this.toChainId, this.receiver, this.sendingId);
         const received = await this.toSender.isTokenReceived(this.sender, this.fromChainId, this.receiver, this.sendingId);
 
         let recieveButton: DomNode | undefined;
@@ -56,10 +56,10 @@ export default class Sended extends DomNode {
                     ),
                 ),
                 el("td",
-                    el("p", `${await this.getFormatting(sended)} APM`),
+                    el("p", `${await this.getFormatting(sendingData.amount)} APM`),
                 ),
                 el("td",
-                    el("p", `${Number(await this.getFormatting(sended)) * 0.3 / 100} APM`),
+                    el("p", `${Number(await this.getFormatting(sendingData.amount)) * 0.3 / 100} APM`),
                 ),
                 el("td",
                     received === true ? el("p", "Done") : recieveButton = el("button", "...", {
@@ -71,25 +71,27 @@ export default class Sended extends DomNode {
 
         if (recieveButton !== undefined) {
             if (this.fromChainId === 1) {
-                const interval = setInterval(async () => {
+                const load = async () => {
                     if (recieveButton?.deleted === true) {
                         clearInterval(interval);
                     } else {
-                        const sendingBlock = await APMReservoirContract.sendingBlock(
+                        const sendingData = await APMReservoirContract.sendingData(
                             this.sender,
                             this.toChainId,
                             this.receiver,
                             this.sendingId,
                         );
                         const currentBlock = await EthereumNetworkProvider.getBlockNumber();
-                        const remainBlocks = currentBlock - sendingBlock.toNumber();
+                        const remainBlocks = currentBlock - sendingData.atBlock.toNumber();
                         if (remainBlocks < 32) {
                             recieveButton?.empty().appendText(`${remainBlocks} / 32`);
                         } else {
                             recieveButton?.empty().appendText("Recieve");
                         }
                     }
-                }, 15000);
+                };
+                load();
+                const interval = setInterval(load, 15000);
             } else {
                 recieveButton?.empty().appendText("Recieve");
             }

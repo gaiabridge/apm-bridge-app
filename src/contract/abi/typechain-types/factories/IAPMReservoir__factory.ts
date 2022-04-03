@@ -24,6 +24,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "address",
+        name: "newReservoir",
+        type: "address",
+      },
+    ],
+    name: "Migrate",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "sender",
@@ -106,11 +119,67 @@ const _abi = [
       {
         indexed: false,
         internalType: "bool",
-        name: "isFeeCollected",
+        name: "isFeePayed",
         type: "bool",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "protocolFee",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "senderDiscountRate",
+        type: "uint256",
       },
     ],
     name: "SendToken",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "status",
+        type: "bool",
+      },
+    ],
+    name: "SetChainValidity",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "feeRecipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "TransferFee",
     type: "event",
   },
   {
@@ -147,6 +216,19 @@ const _abi = [
         internalType: "contract IFeeDB",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getSigners",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
       },
     ],
     stateMutability: "view",
@@ -206,6 +288,25 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "toChainId",
+        type: "uint256",
+      },
+    ],
+    name: "isValidChain",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "quorum",
     outputs: [
@@ -251,9 +352,19 @@ const _abi = [
         type: "bool",
       },
       {
-        internalType: "address",
-        name: "nft",
-        type: "address",
+        internalType: "uint256",
+        name: "protocolFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "senderDiscountRate",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
       },
       {
         internalType: "uint8[]",
@@ -294,9 +405,9 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "address",
-        name: "nft",
-        type: "address",
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
       },
     ],
     name: "sendToken",
@@ -366,51 +477,28 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "sendedAmount",
+        name: "amount",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "sendingBlock",
+        name: "atBlock",
         type: "uint256",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
       {
-        internalType: "address",
-        name: "signer",
-        type: "address",
+        internalType: "bool",
+        name: "isFeePayed",
+        type: "bool",
       },
-    ],
-    name: "signerIndex",
-    outputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "protocolFee",
         type: "uint256",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
       {
         internalType: "uint256",
-        name: "id",
+        name: "senderDiscountRate",
         type: "uint256",
-      },
-    ],
-    name: "signers",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
       },
     ],
     stateMutability: "view",
@@ -419,6 +507,19 @@ const _abi = [
   {
     inputs: [],
     name: "signersLength",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "signingNonce",
     outputs: [
       {
         internalType: "uint256",

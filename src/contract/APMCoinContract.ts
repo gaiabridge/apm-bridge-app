@@ -4,7 +4,7 @@ import ERC20Contract from "./ethereum-standard/ERC20Contract";
 class APMCoinContract extends ERC20Contract<any> {
 
     constructor() {
-        super("0xc8c424b91d8ce0137bab4b832b7f7d154156ba6c", IERC20Artifact.abi, []);
+        super("0xc8c424b91d8ce0137bab4b832b7f7d154156ba6c", IERC20Artifact.abi, ["Approval"]);
     }
 }
 

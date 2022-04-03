@@ -16,6 +16,7 @@ export default class Form extends DomNode {
     private loadBalance;
     private connectHandler;
     private transferHandler;
+    private approvalHandler;
     private sendHandler;
     delete(): void;
 }

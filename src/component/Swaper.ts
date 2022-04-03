@@ -64,15 +64,23 @@ export default class Swaper extends DomNode {
                         el("a", "Max", {
                             click: async () => {
                                 const owner = await this.fromForm.sender!.loadAddress();
-                                const balance = await this.fromForm.sender!.balanceOf(owner!);
+                                let balance = await this.fromForm.sender!.balanceOf(owner!);
 
-                                this.amountInput.domElement.value = utils.formatEther(balance);
+                                if (this.fromForm.chainId !== 1) {
+                                    balance = balance.div(100).mul(97);
+                                }
+
+                                const value = utils.formatEther(balance);
+                                this.amountInput.domElement.value = value;
+
+                                this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(value) * 0.3 / 100}`, 6));
+                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${Number(value) - Number(value) * 0.3 / 100}`, 6));
                             }
                         }),
                         this.amountInput = el("input", {
                             change: () => {
-                                this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) * 0.3 / 100}`));
-                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) - Number(this.amountInput.domElement.value) * 0.3 / 100}`));
+                                this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) * 0.3 / 100}`, 6));
+                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) - Number(this.amountInput.domElement.value) * 0.3 / 100}`, 6));
                             }
                         }),
                     ),
@@ -170,6 +178,8 @@ export default class Swaper extends DomNode {
         this.loadHistory();
         this.fromForm.on("connect", () => this.loadHistory());
         this.toForm.on("connect", () => this.loadHistory());
+
+        this.fromForm.on("approved", () => this.getApprove(this.fromForm.chainId));
     }
 
     private loadHistoryNonce = 0;
@@ -255,7 +265,7 @@ export default class Swaper extends DomNode {
                 sendingId.toNumber(),
                 async () => {
                     if (this.fromForm.sender !== undefined) {
-                        const sended = await this.fromForm.sender.sendedAmounts(
+                        const sendingData = await this.fromForm.sender.sendingData(
                             sender,
                             this.toForm.chainId,
                             receiver,
@@ -266,7 +276,7 @@ export default class Swaper extends DomNode {
                             this.toForm.chainId,
                             receiver,
                             sendingId,
-                            sended,
+                            sendingData.amount,
                         );
                         this.loadHistory();
                     }
@@ -285,7 +295,8 @@ export default class Swaper extends DomNode {
                 await this.fromForm.sender.sendToken(
                     this.toForm.chainId,
                     receiver,
-                    amount
+                    amount,
+                    utils.defaultAbiCoder.encode(["address"], [constants.AddressZero]),
                 );
             }
         }
@@ -307,18 +318,17 @@ export default class Swaper extends DomNode {
             if (receiver === _receiver) {
                 try {
 
-                    const uri = `sign?receiver=${receiver}&fromChainId=${this.fromForm.chainId
+                    const result1 = await superagent.get(`https://apm-test-api.gaiabridge.com/sign?receiver=${receiver}&fromChainId=${this.fromForm.chainId
                         }&toChainId=${this.toForm.chainId
-                        }&sender=${sender}&sendingId=${sendingId}&amount=${amount.toString()}`;
+                        }&sender=${sender}&sendingId=${sendingId}&amount=${amount.toString()}`).send();
 
-                    const result1 = await superagent.get(`https://apm-test-api.gaiabridge.com/${uri}`).send();
-                    const result2 = await superagent.get(`https://apm-test-api.gaiabridge.com/${uri}`).send();
-                    const result3 = await superagent.get(`https://apm-test-api.gaiabridge.com/${uri}`).send();
+                    const result2 = await superagent.get(`https://apm-test-api.gaiabridge.com/sign2ForTest?receiver=${receiver}&fromChainId=${this.fromForm.chainId
+                        }&toChainId=${this.toForm.chainId
+                        }&sender=${sender}&sendingId=${sendingId}&amount=${amount.toString()}`).send();
 
                     if (
                         result1.body.confirming === true ||
-                        result2.body.confirming === true ||
-                        result3.body.confirming === true
+                        result2.body.confirming === true
                     ) {
                         alert("이더리움 Block Confirm을 기다리는 중입니다.");
                     }
@@ -333,11 +343,9 @@ export default class Swaper extends DomNode {
 
                         const sig1 = utils.splitSignature(result1.body.signedMessage);
                         const sig2 = utils.splitSignature(result2.body.signedMessage);
-                        const sig3 = utils.splitSignature(result3.body.signedMessage);
 
                         vs.push(sig1.v); rs.push(sig1.r); ss.push(sig1.s);
                         vs.push(sig2.v); rs.push(sig2.r); ss.push(sig2.s);
-                        vs.push(sig3.v); rs.push(sig3.r); ss.push(sig3.s);
 
                         await this.toForm.sender.receiveToken(
                             sender,
@@ -346,7 +354,12 @@ export default class Swaper extends DomNode {
                             amount,
                             sendingId,
                             isFeePayed,
-                            vs, rs, ss,
+                            30,
+                            0,
+                            utils.defaultAbiCoder.encode(["address"], [constants.AddressZero]),
+                            vs,
+                            rs,
+                            ss,
                         );
                     }
                 } catch (error: any) {
