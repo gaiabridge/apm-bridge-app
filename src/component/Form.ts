@@ -15,7 +15,6 @@ export default class Form extends DomNode {
     private chainSelect: DomNode<HTMLSelectElement>;
     private balanceDisplay: DomNode;
     private addressDisplay: DomNode;
-    //private disconnectButton: DomNode;
     private buttonContainer: DomNode;
 
     constructor(
@@ -41,18 +40,6 @@ export default class Form extends DomNode {
             (this.balanceDisplay = el("p")),
             el(".address-container",
                 (this.addressDisplay = el("p")),
-                /*(this.disconnectButton = el("a.disconnect",
-                    el("img", { src: "/images/shared/icn/icn-disconnect.svg" }),
-                    {
-                        click: () => {
-                            if (this.chainId === 8217) {
-                                
-                            } else if (this.chainId === 1) {
-                                EthereumWallet.disconnect();
-                            }
-                        },
-                    },
-                )),*/
             ),
             (this.buttonContainer = el(".button-container")),
         );
@@ -151,9 +138,7 @@ export default class Form extends DomNode {
         amount: BigNumber,
         sendingId: BigNumber,
     ) => {
-        if (this.chainId === 1) {
-            // TODO: 메시지 등
-        } else {
+        if (this.chainId !== 1) {
             this.swaper.receive(sender, toChainId, receiver, sendingId, amount);
         }
         const owner = await this.sender?.loadAddress();

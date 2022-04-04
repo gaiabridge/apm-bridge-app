@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { constants } from "ethers";
+import Config from "../Config";
 import EthereumWallet from "../ethereum/EthereumWallet";
 import APMReservoirArtifact from "./abi/artifacts/contracts/APMReservoir.sol/APMReservoir.json";
 import APMCoinContract from "./APMCoinContract";
@@ -9,7 +10,7 @@ import GaiaBridgeInterface from "./GaiaBridgeInterface";
 class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeInterface {
 
     constructor() {
-        super("0x488dE692cBB3Ce5f73B9AEbe5D98B45A1cEBfA0e", APMReservoirArtifact.abi, [
+        super(Config.contracts.APMReservoir, APMReservoirArtifact.abi, [
             "AddSigner",
             "RemoveSigner",
             "SendToken",

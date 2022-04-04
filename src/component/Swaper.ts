@@ -2,6 +2,7 @@ import { DomNode, el } from "@hanul/skynode";
 import { BigNumber, BigNumberish, constants, utils } from "ethers";
 import SkyUtil from "skyutil";
 import superagent from "superagent";
+import Config from "../Config";
 import APMCoinContract from "../contract/APMCoinContract";
 import APMReservoirContract from "../contract/APMReservoirContract";
 import KAPMContract from "../contract/KAPMContract";
@@ -67,10 +68,11 @@ export default class Swaper extends DomNode {
                                 let balance = await this.fromForm.sender!.balanceOf(owner!);
 
                                 if (this.fromForm.chainId !== 1) {
-                                    balance = balance.div(100).mul(97);
+                                    balance = balance.mul(1000).div(1003);
                                 }
 
                                 const value = utils.formatEther(balance);
+                                console.log(Number(value) + Number(value) * 0.3 / 100);
                                 this.amountInput.domElement.value = value;
 
                                 this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(value) * 0.3 / 100}`, 6));
@@ -79,8 +81,10 @@ export default class Swaper extends DomNode {
                         }),
                         this.amountInput = el("input", {
                             change: () => {
-                                this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) * 0.3 / 100}`, 6));
-                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${Number(this.amountInput.domElement.value) - Number(this.amountInput.domElement.value) * 0.3 / 100}`, 6));
+                                const value = this.amountInput.domElement.value;
+
+                                this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(value) * 0.3 / 100}`, 6));
+                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${Number(value) - Number(value) * 0.3 / 100}`, 6));
                             }
                         }),
                     ),
@@ -318,50 +322,54 @@ export default class Swaper extends DomNode {
             if (receiver === _receiver) {
                 try {
 
-                    const result1 = await superagent.get(`https://apm-test-api.gaiabridge.com/sign?receiver=${receiver}&fromChainId=${this.fromForm.chainId
-                        }&toChainId=${this.toForm.chainId
-                        }&sender=${sender}&sendingId=${sendingId}&amount=${amount.toString()}`).send();
+                    const isFeePayed = this.fromForm.chainId === 8217;
+                    const protocolFee = 30;
+                    const senderDiscountRate = Config.discountUsers.includes(sender) === true ? 5000 : 0;
 
-                    const result2 = await superagent.get(`https://apm-test-api.gaiabridge.com/sign2ForTest?receiver=${receiver}&fromChainId=${this.fromForm.chainId
-                        }&toChainId=${this.toForm.chainId
-                        }&sender=${sender}&sendingId=${sendingId}&amount=${amount.toString()}`).send();
+                    const vs: number[] = [];
+                    const rs: string[] = [];
+                    const ss: string[] = [];
 
-                    if (
-                        result1.body.confirming === true ||
-                        result2.body.confirming === true
-                    ) {
-                        alert("이더리움 Block Confirm을 기다리는 중입니다.");
+                    for (const url of Config.oracleURLs) {
+
+                        const params = new URLSearchParams();
+                        params.set("receiver", receiver);
+                        params.set("fromChainId", String(this.fromForm.chainId));
+                        params.set("toChainId", String(this.toForm.chainId));
+                        params.set("sender", sender);
+                        params.set("sendingId", String(sendingId));
+                        params.set("amount", amount.toString());
+                        params.set("protocolFee", String(protocolFee));
+                        params.set("senderDiscountRate", String(senderDiscountRate));
+
+                        const result = await superagent.get(`${url}?${params.toString()}`).send();
+
+                        if (result.body.confirming === true) {
+                            alert("이더리움 Block Confirm을 기다리는 중입니다.");
+                            return;
+                        }
+
+                        const sig = utils.splitSignature(result.body.signedMessage);
+
+                        vs.push(sig.v);
+                        rs.push(sig.r);
+                        ss.push(sig.s);
                     }
 
-                    else {
-
-                        let isFeePayed = this.fromForm.chainId === 8217;
-
-                        const vs: number[] = [];
-                        const rs: string[] = [];
-                        const ss: string[] = [];
-
-                        const sig1 = utils.splitSignature(result1.body.signedMessage);
-                        const sig2 = utils.splitSignature(result2.body.signedMessage);
-
-                        vs.push(sig1.v); rs.push(sig1.r); ss.push(sig1.s);
-                        vs.push(sig2.v); rs.push(sig2.r); ss.push(sig2.s);
-
-                        await this.toForm.sender.receiveToken(
-                            sender,
-                            this.fromForm.chainId,
-                            receiver,
-                            amount,
-                            sendingId,
-                            isFeePayed,
-                            30,
-                            0,
-                            utils.defaultAbiCoder.encode(["address"], [constants.AddressZero]),
-                            vs,
-                            rs,
-                            ss,
-                        );
-                    }
+                    await this.toForm.sender.receiveToken(
+                        sender,
+                        this.fromForm.chainId,
+                        receiver,
+                        amount,
+                        sendingId,
+                        isFeePayed,
+                        protocolFee,
+                        senderDiscountRate,
+                        utils.defaultAbiCoder.encode(["address"], [constants.AddressZero]),
+                        vs,
+                        rs,
+                        ss,
+                    );
                 } catch (error: any) {
                     alert(`Error: ${error.message}`);
                 }

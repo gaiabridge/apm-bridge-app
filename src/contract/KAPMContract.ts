@@ -1,4 +1,5 @@
 import { BigNumber } from "ethers";
+import Config from "../Config";
 import Klaytn from "../klaytn/Klaytn";
 import KAPMCoinArtifact from "./abi/artifacts/contracts/KAPMCoin.sol/KAPMCoin.json";
 import KIP7Contract from "./klaytn-standard/KIP7Contract";
@@ -6,7 +7,7 @@ import KIP7Contract from "./klaytn-standard/KIP7Contract";
 class KAPMCoinContract extends KIP7Contract {
 
     constructor() {
-        super("0x1637fc8E5D7976E27f9848EEa0734374671c34E8", KAPMCoinArtifact.abi);
+        super(Config.contracts.KAPMCoin, KAPMCoinArtifact.abi);
         this.watch();
     }
 

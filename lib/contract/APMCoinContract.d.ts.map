@@ -1,1 +1,1 @@
-{"version":3,"file":"APMCoinContract.d.ts","sourceRoot":"","sources":["../../src/contract/APMCoinContract.ts"],"names":[],"mappings":"AACA,OAAO,aAAa,MAAM,mCAAmC,CAAC;AAE9D,cAAM,eAAgB,SAAQ,aAAa,CAAC,GAAG,CAAC;;CAK/C;;AAED,wBAAqC"}
+{"version":3,"file":"APMCoinContract.d.ts","sourceRoot":"","sources":["../../src/contract/APMCoinContract.ts"],"names":[],"mappings":"AAEA,OAAO,aAAa,MAAM,mCAAmC,CAAC;AAE9D,cAAM,eAAgB,SAAQ,aAAa,CAAC,GAAG,CAAC;;CAK/C;;AAED,wBAAqC"}

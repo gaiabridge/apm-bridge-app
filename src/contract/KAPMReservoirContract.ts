@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import Config from "../Config";
 import Klaytn from "../klaytn/Klaytn";
 import KlaytnWallet from "../klaytn/KlaytnWallet";
 import KAPMReservoirArtifact from "./abi/artifacts/contracts/KAPMReservoir.sol/KAPMReservoir.json";
@@ -9,7 +10,7 @@ import KlaytnContract from "./KlaytnContract";
 class KAPMReservoirContract extends KlaytnContract implements GaiaBridgeInterface {
 
     constructor() {
-        super("0xf3122ebe20687cC77b6C478478Cf56Bf4ACBD5C5", KAPMReservoirArtifact.abi);
+        super(Config.contracts.KAPMReservoir, KAPMReservoirArtifact.abi);
         KlaytnWallet.toss("connect", this);
         KAPMContract.toss("Transfer", this);
         KAPMContract.toss("Approval", this);
