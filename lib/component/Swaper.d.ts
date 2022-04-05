@@ -15,6 +15,7 @@ export default class Swaper extends DomNode {
     private loadHistoryNonce;
     numberWithCommas(x: string, fixed?: number): string;
     private getApprove;
+    private loadHistoryIndex;
     private loadHistory;
     addSended(sender: string, receiver: string, sendingId: BigNumber): void;
     send(amount: BigNumberish): Promise<void>;

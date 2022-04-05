@@ -220,7 +220,12 @@ export default class Swaper extends DomNode {
         }
     }
 
+    private loadHistoryIndex = 0;
+
     private async loadHistory() {
+
+        const currentIndex = this.loadHistoryIndex + 1;
+        this.loadHistoryIndex += 1;
 
         const owner = await this.fromForm.sender!.loadAddress();
         const balance = await this.fromForm.sender!.balanceOf(owner!);
@@ -246,7 +251,7 @@ export default class Swaper extends DomNode {
                 const nonce = this.loadHistoryNonce;
 
                 SkyUtil.repeatResultAsync(count.toNumber(), async (sendingId) => {
-                    if (this.loadHistoryNonce === nonce) {
+                    if (this.loadHistoryNonce === nonce && currentIndex === this.loadHistoryIndex) {
                         this.addSended(sender, receiver, BigNumber.from(sendingId));
                     }
                 });
