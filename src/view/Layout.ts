@@ -21,7 +21,7 @@ export default class Layout implements View {
                     el(".sns",
                         el("a.item", "Gaia Discord",
                             {
-                                href: "https://discord.gg/gaia",
+                                href: "https://discord.com/invite/SjM4meh3hd",
                                 target: "_blank",
                             }
                         ),
