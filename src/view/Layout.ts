@@ -38,7 +38,8 @@ export default class Layout implements View {
     }
 
     public set title(title: string) {
-        document.title = `${title} | apM Bridge`;
+        //document.title = `${title} | apM Bridge`;
+        document.title = `apM Bridge`;
     }
 
     public changeParams(params: ViewParams, uri: string): void { }

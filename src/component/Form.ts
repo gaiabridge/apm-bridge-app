@@ -25,7 +25,7 @@ export default class Form extends DomNode {
         super("form")
         this.append(
             this.chainIcon = el("img", { src: "/images/shared/icn/icn-klaytn.svg", alt: "chain image" }),
-            this.isFrom ? el("p", "FROM\n보내는 체인") : el("p", "TO\n받는체인"),
+            this.isFrom ? el("p", "FROM\n(보내는 체인)") : el("p", "TO\n(받는 체인)"),
             this.chainSelect = el("select",
                 el("option", "Klaytn", { value: "8217" }),
                 el("option", "Ethereum", { value: "1" }),

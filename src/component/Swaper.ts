@@ -116,7 +116,7 @@ export default class Swaper extends DomNode {
                 ),
                 el(".button-container",
                     el(".content",
-                        this.approveButton = el("button", "Approve\n토큰 사용 허가", {
+                        this.approveButton = el("button", "Approve\n(토큰 사용 허가)", {
                             "disabled": "",
                             click: async () => {
                                 const fromChainId = this.fromForm.chainId;
@@ -128,7 +128,7 @@ export default class Swaper extends DomNode {
                                 this.getApprove(fromChainId);
                             }
                         }),
-                        this.transferButton = el("button", "Transfer\n전송하기", {
+                        this.transferButton = el("button", "Transfer\n(전송하기)", {
                             click: () => this.send(
                                 utils.parseEther(this.amountInput.domElement.value)
                             ),
