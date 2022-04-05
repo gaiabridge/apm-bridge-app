@@ -1,6 +1,6 @@
 declare const _default: {
     chainId: number;
-    oracleURLs: string[];
+    oracleHosts: string[];
     contracts: {
         APMCoin: string;
         APMReservoir: string;

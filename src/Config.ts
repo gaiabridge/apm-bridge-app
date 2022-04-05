@@ -1,8 +1,9 @@
 export default {
     chainId: 8217,
-    oracleURLs: [
-        "https://apm-test-api.gaiabridge.com/sign",
-        "https://apm-test-api.gaiabridge.com/sign2ForTest",
+    oracleHosts: [
+        "bridge-api1.apm-coin.com",
+        "bridge-api2.apm-coin.com",
+        "bridge-api3.apm-coin.com",
     ],
     contracts: {
         APMCoin: "0xc8c424b91d8ce0137bab4b832b7f7d154156ba6c",

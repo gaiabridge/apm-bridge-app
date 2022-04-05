@@ -330,7 +330,7 @@ export default class Swaper extends DomNode {
                     const rs: string[] = [];
                     const ss: string[] = [];
 
-                    for (const url of Config.oracleURLs) {
+                    for (const host of Config.oracleHosts) {
 
                         const params = new URLSearchParams();
                         params.set("receiver", receiver);
@@ -342,7 +342,7 @@ export default class Swaper extends DomNode {
                         params.set("protocolFee", String(protocolFee));
                         params.set("senderDiscountRate", String(senderDiscountRate));
 
-                        const result = await superagent.get(`${url}?${params.toString()}`).send();
+                        const result = await superagent.get(`https://${host}/sign?${params.toString()}`).send();
 
                         if (result.body.confirming === true) {
                             alert("이더리움 Block Confirm을 기다리는 중입니다.");
