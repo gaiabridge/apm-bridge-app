@@ -44,7 +44,7 @@ export default class Swaper extends DomNode {
                             const fromChainId = this.fromForm.chainId;
                             this.fromForm.changeChain(this.toForm.chainId);
                             this.toForm.changeChain(fromChainId);
-                            this.getApprove(fromChainId);
+                            this.getApprove(this.fromForm.chainId);
 
                             this.loadHistory();
 
