@@ -329,7 +329,7 @@ export default class Swaper extends DomNode {
 
                     const isFeePayed = this.fromForm.chainId === 8217;
                     const protocolFee = 30;
-                    const senderDiscountRate = Config.discountUsers.includes(sender) === true ? 5000 : 0;
+                    const senderDiscountRate = Config.discountUsers.includes(sender) === true ? 6666 : 0;
 
                     const vs: number[] = [];
                     const rs: string[] = [];
@@ -343,9 +343,6 @@ export default class Swaper extends DomNode {
                         params.set("toChainId", String(this.toForm.chainId));
                         params.set("sender", sender);
                         params.set("sendingId", String(sendingId));
-                        params.set("amount", amount.toString());
-                        params.set("protocolFee", String(protocolFee));
-                        params.set("senderDiscountRate", String(senderDiscountRate));
 
                         const result = await superagent.get(`https://${host}/sign?${params.toString()}`).send();
 
