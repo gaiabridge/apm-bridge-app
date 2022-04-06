@@ -7,7 +7,7 @@ declare const _default: {
         KAPMCoin: string;
         KAPMReservoir: string;
     };
-    discountUsers: string[];
+    discountUsers: never[];
 };
 export default _default;
 //# sourceMappingURL=Config.d.ts.map

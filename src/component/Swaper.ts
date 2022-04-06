@@ -329,7 +329,7 @@ export default class Swaper extends DomNode {
 
                     const isFeePayed = this.fromForm.chainId === 8217;
                     const protocolFee = 30;
-                    const senderDiscountRate = Config.discountUsers.includes(sender) === true ? 6666 : 0;
+                    const senderDiscountRate = 0;//Config.discountUsers.includes(sender) === true ? 6666 : 0;
 
                     const vs: number[] = [];
                     const rs: string[] = [];
