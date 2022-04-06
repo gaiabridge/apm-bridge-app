@@ -111,12 +111,12 @@ export default class Swaper extends DomNode {
                 el(".warning-container",
                     el(".content",
                         el("img", { src: "/images/shared/icn/icn-warning.svg", alt: "icn-warning.svg" }),
-                        el("p", "브릿지 이용 시 양 체인에 가스비가 발생됩니다.\n보내는 체인이 이더리움일 경우 32컨펌 후 Claim 서명이 필요합니다"),
+                        el("p", "브릿지 이용 시 양 체인에 가스비가 발생됩니다.\n보내는 체인이 이더리움일 경우 32컨펌 후 Recieve 서명이 필요합니다"),
                     ),
                 ),
                 el(".button-container",
                     el(".content",
-                        this.approveButton = el("button", "Approve\n토큰 사용 허가", {
+                        this.approveButton = el("button", "Approve\n(토큰 사용 허가)", {
                             "disabled": "",
                             click: async () => {
                                 const fromChainId = this.fromForm.chainId;
@@ -128,7 +128,7 @@ export default class Swaper extends DomNode {
                                 this.getApprove(fromChainId);
                             }
                         }),
-                        this.transferButton = el("button", "Transfer\n전송하기", {
+                        this.transferButton = el("button", "Transfer\n(전송하기)", {
                             click: () => this.send(
                                 utils.parseEther(this.amountInput.domElement.value)
                             ),
@@ -138,7 +138,7 @@ export default class Swaper extends DomNode {
             ),
             el("section.history-container",
                 el(".title", "전송 이력"),
-                el("p", "트랜잭션이 한번 시작되면 되돌릴 수 없습니다.\nTransfer후 Claim 까지 완료되어야 체인 간 전송이 완료됩니다"),
+                el("p", "트랜잭션이 한번 시작되면 되돌릴 수 없습니다.\nTransfer후 Recieve 까지 완료되어야 체인 간 전송이 완료됩니다"),
                 this.sendedList = el("table",
                     el("thead",
                         el("tr",

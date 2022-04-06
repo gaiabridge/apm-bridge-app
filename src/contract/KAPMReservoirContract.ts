@@ -62,7 +62,7 @@ class KAPMReservoirContract extends KlaytnContract implements GaiaBridgeInterfac
     }
 
     public addTokenToWallet() {
-        KlaytnWallet.addToken(this.address, "KAPM", 18, "https://apm-test.gaiabridge.com/images/shared/icn/icn-apmcoin.png");
+        KlaytnWallet.addToken(KAPMContract.address, "APM", 18, "https://bridge.apm-coin.com/images/shared/icn/icn-apmcoin-256.png");
     }
 
     public async sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish, data: string) {

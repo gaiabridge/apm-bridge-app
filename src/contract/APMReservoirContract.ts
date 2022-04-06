@@ -34,7 +34,7 @@ class APMReservoirContract extends EthereumContract<any> implements GaiaBridgeIn
     }
 
     public addTokenToWallet() {
-        EthereumWallet.addToken(APMCoinContract.address, "APM", 18, "https://apm-test.gaiabridge.com/images/shared/icn/icn-apmcoin.png");
+        EthereumWallet.addToken(APMCoinContract.address, "APM", 18, "https://bridge.apm-coin.com/images/shared/icn/icn-apmcoin-256.png");
     }
 
     public async sendToken(toChain: BigNumberish, receiver: string, amount: BigNumberish, data: string) {
