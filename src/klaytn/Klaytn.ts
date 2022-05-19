@@ -1,6 +1,6 @@
 class Klaytn {
 
-    public caver = new (window as any).Caver(new (window as any).Caver.providers.WebsocketProvider("wss://public-node-api.klaytnapi.com/v1/cypress/ws", {
+    public caver = new (window as any).Caver(new (window as any).Caver.providers.WebsocketProvider("wss://en-ws.apm-coin.com", {
         reconnect: {
             auto: true,
             delay: 1000,
