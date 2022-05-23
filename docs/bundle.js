@@ -5716,7 +5716,7 @@ eval("\r\nvar __importDefault = (this && this.__importDefault) || function (mod)
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-eval("\r\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\r\nclass Klaytn {\r\n    constructor() {\r\n        this.caver = new window.Caver(new window.Caver.providers.WebsocketProvider(\"wss://en-ws.apm-coin.com\", {\r\n            reconnect: {\r\n                auto: true,\r\n                delay: 1000,\r\n                maxAttempts: true,\r\n                onTimeout: false\r\n            },\r\n        }));\r\n    }\r\n    createContract(address, abi) {\r\n        return this.caver.contract.create(abi, address);\r\n    }\r\n    async loadBlockNumber() {\r\n        return await this.caver.klay.getBlockNumber();\r\n    }\r\n}\r\nexports[\"default\"] = new Klaytn();\r\n\n\n//# sourceURL=webpack://skynode-web3-boilerplate/./src/klaytn/Klaytn.ts?");
+eval("\r\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\r\nclass Klaytn {\r\n    constructor() {\r\n        this.caver = new window.Caver(new window.Caver.providers.WebsocketProvider(\"wss://klaytn01.fandom.finance/ws\", {\r\n            reconnect: {\r\n                auto: true,\r\n                delay: 1000,\r\n                maxAttempts: true,\r\n                onTimeout: false\r\n            },\r\n        }));\r\n    }\r\n    createContract(address, abi) {\r\n        return this.caver.contract.create(abi, address);\r\n    }\r\n    async loadBlockNumber() {\r\n        return await this.caver.klay.getBlockNumber();\r\n    }\r\n}\r\nexports[\"default\"] = new Klaytn();\r\n\n\n//# sourceURL=webpack://skynode-web3-boilerplate/./src/klaytn/Klaytn.ts?");
 
 /***/ }),
 
