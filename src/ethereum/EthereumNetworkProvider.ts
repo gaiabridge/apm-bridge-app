@@ -8,7 +8,7 @@ class EthereumNetworkProvider extends EventContainer {
 
     constructor() {
         super();
-        this.provider = new ethers.providers.WebSocketProvider("wss://mainnet.infura.io/ws/v3/4d08e8ac01134ac0abe286403de9e9ac");
+        this.provider = new ethers.providers.WebSocketProvider("wss://mainnet.infura.io/ws/v3/66b60f9d9e264aca9c377d66e14047c9");
         this.signer = this.provider.getSigner(ethers.constants.AddressZero);
     }
 
