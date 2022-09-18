@@ -1,7 +1,9 @@
 import { ethers } from "ethers";
 import EventContainer from "eventcontainer";
 declare class EthereumNetworkProvider extends EventContainer {
-    provider: ethers.providers.WebSocketProvider;
+    private ethereum;
+    private get existsInjectedProvider();
+    provider: ethers.providers.JsonRpcProvider;
     signer: ethers.providers.JsonRpcSigner;
     constructor();
     getBlockNumber(): Promise<number>;

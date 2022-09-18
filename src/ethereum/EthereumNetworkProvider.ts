@@ -3,12 +3,19 @@ import EventContainer from "eventcontainer";
 
 class EthereumNetworkProvider extends EventContainer {
 
-    public provider: ethers.providers.WebSocketProvider;
+    private ethereum: any | undefined = (window as any).ethereum;
+    private get existsInjectedProvider() { return this.ethereum !== undefined; }
+
+    public provider: ethers.providers.JsonRpcProvider;
     public signer: ethers.providers.JsonRpcSigner;
 
     constructor() {
         super();
-        this.provider = new ethers.providers.WebSocketProvider("wss://mainnet.infura.io/ws/v3/66b60f9d9e264aca9c377d66e14047c9");
+        if (this.existsInjectedProvider === true) {
+            this.provider = new ethers.providers.Web3Provider(this.ethereum);
+        } else {
+            this.provider = new ethers.providers.JsonRpcProvider("https://cloudflare-eth.com");
+        }
         this.signer = this.provider.getSigner(ethers.constants.AddressZero);
     }
 
