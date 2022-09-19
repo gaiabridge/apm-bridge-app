@@ -1,0 +1,1 @@
+{"version":3,"file":"KlaytnFeeDBContract.d.ts","sourceRoot":"","sources":["../../src/contract/KlaytnFeeDBContract.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,QAAQ,CAAC;AAGnC,OAAO,cAAc,MAAM,kBAAkB,CAAC;AAE9C,cAAM,mBAAoB,SAAQ,cAAc;;IAM/B,gBAAgB,CAAC,IAAI,EAAE,MAAM,GAAG,OAAO,CAAC,SAAS,CAAC;CAGlE;;AAED,wBAAyC"}

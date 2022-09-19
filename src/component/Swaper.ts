@@ -5,8 +5,10 @@ import superagent from "superagent";
 import Config from "../Config";
 import APMCoinContract from "../contract/APMCoinContract";
 import APMReservoirContract from "../contract/APMReservoirContract";
+import EthFeeDBContract from "../contract/EthFeeDBContract";
 import KAPMContract from "../contract/KAPMContract";
 import KAPMReservoirContract from "../contract/KAPMReservoirContract";
+import KlaytnFeeDBContract from "../contract/KlaytnFeeDBContract";
 import EthereumWallet from "../ethereum/EthereumWallet";
 import KlaytnWallet from "../klaytn/KlaytnWallet";
 import Store from "../Store";
@@ -153,9 +155,7 @@ export default class Swaper extends DomNode {
             ),
         );
 
-        if (savedFromChainId !== undefined) {
-            this.getApprove(savedFromChainId);
-        }
+        this.getApprove(savedFromChainId ?? 8217);
 
         this.fromForm.on("changeChain", (chainId: number, originChainId: number) => {
             if (this.toForm.chainId === chainId) {
@@ -330,7 +330,10 @@ export default class Swaper extends DomNode {
                     const isFeePayed = this.fromForm.chainId === 8217;
                     const protocolFee = 30;
                     //const senderDiscountRate = 0;
-                    const senderDiscountRate = Config.discountUsers.includes(sender) === true ? 3333 : 0;
+                    const senderDiscountRate = this.fromForm.chainId === 8217 ?
+                        await KlaytnFeeDBContract.userDiscountRate(sender) :
+                        await EthFeeDBContract.userDiscountRate(sender);
+                    console.log(senderDiscountRate);
 
                     const vs: number[] = [];
                     const rs: string[] = [];
@@ -367,7 +370,7 @@ export default class Swaper extends DomNode {
                         sendingId,
                         isFeePayed,
                         protocolFee,
-                        senderDiscountRate,
+                        senderDiscountRate.toNumber(),
                         utils.defaultAbiCoder.encode(["address"], [constants.AddressZero]),
                         vs,
                         rs,

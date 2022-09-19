@@ -11,10 +11,5 @@ export default {
         KAPMCoin: "0x4ec5e1c092f9c40d1e9be5744feddb23935232e9",
         KAPMReservoir: "0xe62bC2da4342040D9230c099D74Ff3756BD3862D",
     },
-    discountUsers: [
-        "0x9E572A02e25b090b7226faAf938DCf8008278aB8",
-        "0x07cCB56b292AC76dF58B5d4bF47Be56372B465bf",
-        "0x642314f7A029d13f21Dd0Ce43868ba711448040E"
-    ],
     //discountNFTs: ["0xBb915237D8b46Dcdfe813c914Bf98708e0dAd84A"],
 };
