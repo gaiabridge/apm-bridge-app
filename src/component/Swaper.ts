@@ -286,6 +286,7 @@ export default class Swaper extends DomNode {
                             receiver,
                             sendingId,
                             sendingData.amount,
+                            sendingData.senderDiscountRate,
                         );
                         this.loadHistory();
                     }
@@ -316,7 +317,8 @@ export default class Swaper extends DomNode {
         toChainId: BigNumberish,
         _receiver: string,
         sendingId: BigNumber,
-        amount: BigNumberish
+        amount: BigNumberish,
+        senderDiscountRate: BigNumberish,
     ) {
         if (
             this.fromForm.sender !== undefined &&
@@ -329,10 +331,6 @@ export default class Swaper extends DomNode {
 
                     const isFeePayed = this.fromForm.chainId === 8217;
                     const protocolFee = 30;
-                    //const senderDiscountRate = 0;
-                    const senderDiscountRate = this.fromForm.chainId === 8217 ?
-                        await KlaytnFeeDBContract.userDiscountRate(sender) :
-                        await EthFeeDBContract.userDiscountRate(sender);
                     console.log(senderDiscountRate);
 
                     const vs: number[] = [];
@@ -370,7 +368,7 @@ export default class Swaper extends DomNode {
                         sendingId,
                         isFeePayed,
                         protocolFee,
-                        senderDiscountRate.toNumber(),
+                        senderDiscountRate,
                         utils.defaultAbiCoder.encode(["address"], [constants.AddressZero]),
                         vs,
                         rs,

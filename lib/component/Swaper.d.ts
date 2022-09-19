@@ -19,6 +19,6 @@ export default class Swaper extends DomNode {
     private loadHistory;
     addSended(sender: string, receiver: string, sendingId: BigNumber): void;
     send(amount: BigNumberish): Promise<void>;
-    receive(sender: string, toChainId: BigNumberish, _receiver: string, sendingId: BigNumber, amount: BigNumberish): Promise<void>;
+    receive(sender: string, toChainId: BigNumberish, _receiver: string, sendingId: BigNumber, amount: BigNumberish, senderDiscountRate: BigNumberish): Promise<void>;
 }
 //# sourceMappingURL=Swaper.d.ts.map
