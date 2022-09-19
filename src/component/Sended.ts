@@ -132,7 +132,7 @@ export default class Sended extends DomNode {
         return balanceDisplay;
     }
 
-    private receiveTokenHandler = async (receiver: string, fromChain: BigNumber, sender: string, sendId: BigNumber) => {
+    private receiveTokenHandler = async (sender: string, fromChain: BigNumber, receiver: string, amount: BigNumber, sendId: BigNumber) => {
         if (receiver === this.receiver && fromChain.toNumber() === this.fromChainId && sender === this.sender && sendId.toNumber() === this.sendingId) {
             this.load();
         }
