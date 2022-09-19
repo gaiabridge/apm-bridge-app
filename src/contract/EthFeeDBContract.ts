@@ -5,7 +5,7 @@ import EthereumContract from "./EthereumContract";
 class FeeDBContract extends EthereumContract<any> {
 
     constructor() {
-        super("0xe1Ca39953e182bE38e8D5E24C93ca94ABcCa0C6F", FeeDBArtifact.abi, []);
+        super("0x8e9066E83390Fe46256044392eE1a930a0a19373", FeeDBArtifact.abi, []);
     }
 
     public async userDiscountRate(user: string): Promise<BigNumber> {

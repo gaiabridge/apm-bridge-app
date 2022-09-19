@@ -6,7 +6,7 @@ import KlaytnContract from "./KlaytnContract";
 class KlaytnFeeDBContract extends KlaytnContract {
 
     constructor() {
-        super("0xe06C67d792CADd2E58573f09C26B188c6A00A971", FeeDBArtifact.abi);
+        super("0xc8c424b91d8ce0137bab4b832b7f7d154156ba6c", FeeDBArtifact.abi);
     }
 
     public async userDiscountRate(user: string): Promise<BigNumber> {
