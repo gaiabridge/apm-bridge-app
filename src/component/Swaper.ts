@@ -140,7 +140,7 @@ export default class Swaper extends DomNode {
             ),
             el("section.history-container",
                 el(".title", "전송 이력"),
-                el("p", "트랜잭션이 한번 시작되면 되돌릴 수 없습니다.\nTransfer후 Recieve 까지 완료되어야 체인 간 전송이 완료됩니다"),
+                el("p", "트랜잭션이 한번 시작되면 되돌릴 수 없습니다.\nTransfer후 Recieve 까지 완료되어야 체인 간 전송이 완료됩니다."),
                 this.sendedList = el("table",
                     el("thead",
                         el("tr",
