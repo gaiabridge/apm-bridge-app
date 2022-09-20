@@ -52,6 +52,10 @@ export default class Swaper extends DomNode {
 
                             this.chainIdsStore.set("from", this.fromForm.chainId);
                             this.chainIdsStore.set("to", this.toForm.chainId);
+
+                            this.amountInput.domElement.value = "";
+                            this.feeDisplay.empty();
+                            this.receivedDisplay.empty();
                         }
                     },
                         el("img.arrow", { src: "/images/shared/icn/icn-arrow-right.svg", height: "50", alt: "icn-arrow-right" })
@@ -86,7 +90,7 @@ export default class Swaper extends DomNode {
                                 const value = this.amountInput.domElement.value;
 
                                 this.feeDisplay.empty().appendText(this.numberWithCommas(`${Number(value) * 0.3 / 100}`, 6));
-                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${Number(value) - Number(value) * 0.3 / 100}`, 6));
+                                this.receivedDisplay.empty().appendText(this.numberWithCommas(`${this.fromForm.chainId === 1 ? Number(value) : Number(value) - Number(value) * 0.3 / 100}`, 6));
                             }
                         }),
                     ),
