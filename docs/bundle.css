@@ -175,42 +175,42 @@ input {
     font-style: normal;
     font-weight: 100;
     font-display: swap;
-    src: url(https://fonts.gstatic.com/s/notosanskr/v27/Pby6FmXiEBPT4ITbgNA5CgmOsn7u.otf) format('opentype');
+    src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzuozeLQ.ttf) format('truetype');
   }
   @font-face {
     font-family: 'Noto Sans KR';
     font-style: normal;
     font-weight: 300;
     font-display: swap;
-    src: url(https://fonts.gstatic.com/s/notosanskr/v27/Pby7FmXiEBPT4ITbgNA5CgmOelzI7g.otf) format('opentype');
+    src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzrQyeLQ.ttf) format('truetype');
   }
   @font-face {
     font-family: 'Noto Sans KR';
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url(https://fonts.gstatic.com/s/notosanskr/v27/PbykFmXiEBPT4ITbgNA5Cgm20A.otf) format('opentype');
+    src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzuoyeLQ.ttf) format('truetype');
   }
   @font-face {
     font-family: 'Noto Sans KR';
     font-style: normal;
     font-weight: 500;
     font-display: swap;
-    src: url(https://fonts.gstatic.com/s/notosanskr/v27/Pby7FmXiEBPT4ITbgNA5CgmOIl3I7g.otf) format('opentype');
+    src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzztgyeLQ.ttf) format('truetype');
   }
   @font-face {
     font-family: 'Noto Sans KR';
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url(https://fonts.gstatic.com/s/notosanskr/v27/Pby7FmXiEBPT4ITbgNA5CgmOalvI7g.otf) format('opentype');
+    src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzg01eLQ.ttf) format('truetype');
   }
   @font-face {
     font-family: 'Noto Sans KR';
     font-style: normal;
     font-weight: 900;
     font-display: swap;
-    src: url(https://fonts.gstatic.com/s/notosanskr/v27/Pby7FmXiEBPT4ITbgNA5CgmOUlnI7g.otf) format('opentype');
+    src: url(https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzkM1eLQ.ttf) format('truetype');
   }
   unicode-range: U+0041-005A, U+0061-007A;
 }
